@@ -1,2 +1,1 @@
-export * from "./validateEIP1271"
-export * from "./validateEIP6492"
+export * from "./isValidSignature";
