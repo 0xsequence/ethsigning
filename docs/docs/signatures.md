@@ -2,20 +2,21 @@
 slug: /
 ---
 
-# Signing Messages in Ethereum: EOAs vs. Smart Contract Wallets
+# EOAs vs. Smart Contract Wallets
 
 In Ethereum, signing messages is a mechanism to prove ownership of a particular address without the need to perform a transaction on the blockchain. This document explains the differences between signing messages with Externally Owned Accounts (EOAs) and smart contract wallets, with a focus on EIP-1271 and EIP-6492 standards.
 
 ## Externally Owned Accounts (EOAs) vs. Smart Contract Wallets
 
-- **EOAs**: 
-    - Simple accounts controlled by private keys.
-    - Can easily sign messages using their private keys which can then be verified by anyone using the corresponding public key.
+- **EOAs**:
+
+  - Simple accounts controlled by private keys.
+  - Can easily sign messages using their private keys which can then be verified by anyone using the corresponding public key.
 
 - **Smart Contract Wallets**:
-    - Contracts that own and control assets.
-    - Can be controlled by EOAs or other contracts.
-    - Unlike EOAs, they don’t have private keys to sign messages, and need a method within the contract to verify signatures.
+  - Contracts that own and control assets.
+  - Can be controlled by EOAs or other contracts.
+  - Unlike EOAs, they don’t have private keys to sign messages, and need a method within the contract to verify signatures.
 
 ## EIP-1271 (Standard Signature Validation Method for Contracts)
 
