@@ -1,1 +1,1 @@
-export * from "./isValidSignature";
+export * from './isValidSignature'
