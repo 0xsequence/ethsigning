@@ -1,6 +1,9 @@
 node_modules/
 docs/
 src/
-test/
+tests/
 
 .prettierrc
+
+jest.config.js
+tsconfig.json
