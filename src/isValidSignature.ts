@@ -46,12 +46,12 @@ export const isValidTypedDataSignature = (
   return isValidSignature(address, encodeTypedDataDigest(typedData), signature, provider)
 }
 
-export async function validateEIP6492Offchain(
+export const validateEIP6492Offchain = async (
   provider: ethers.providers.Provider,
   signer: string,
   hash: ethers.utils.BytesLike,
   signature: ethers.utils.BytesLike
-): Promise<boolean> {
+): Promise<boolean> => {
   return (
     '0x01' ===
     (await provider.call({
