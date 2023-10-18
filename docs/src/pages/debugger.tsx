@@ -1,15 +1,28 @@
-import React, { useState } from 'react'
-import Layout from '@theme/Layout'
+import '@0xsequence/design-system/styles.css'
+
 import { ethers } from 'ethers'
-import { isValidMessageSignature, validateEIP6492Offchain } from 'ethsigning'
 import {
-  SigningKey,
   concat,
   hexlify,
   keccak256,
+  SigningKey,
   splitSignature,
   toUtf8Bytes
 } from 'ethers/lib/utils'
+import { isValidMessageSignature, validateEIP6492Offchain } from 'ethsigning'
+import React, { useState } from 'react'
+
+import {
+  Box,
+  Button,
+  Select,
+  Text,
+  TextArea,
+  TextInput,
+  ThemeProvider
+} from '@0xsequence/design-system'
+import BrowserOnly from '@docusaurus/BrowserOnly'
+import Layout from '@theme/Layout'
 
 const networks = [
   { name: 'Polygon', nodePath: 'polygon' },
@@ -22,99 +35,128 @@ export default function Debugger() {
   const [signature, setSignature] = useState('')
   const [network, setNetwork] = useState('polygon')
 
-  // We need the network picker only if signer address is a smart contract wallet
   const [displayNetworkPicker, setDisplayNetworkPicker] = useState(false)
 
   const checkWalletType = () => {}
 
   return (
-    <Layout title="Signature debugger" description="">
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          marginTop: '20px',
-          textAlign: 'center'
-        }}>
-        <h2>Signature Validation Debugger</h2>
-        <p>Enter signer address, message and signature to debug.</p>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            maxWidth: '1200px',
-            minWidth: '360px',
-            justifyContent: 'start',
-            alignItems: 'center',
-            fontSize: '20px',
-            padding: '20px'
-          }}>
-          <div style={{ width: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <h3>Signer address:</h3>
-              <input
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                placeholder="0x..."
-                style={{ padding: '10px', width: '90%' }}
-                name="signerAddress"
-              />
-              <h3 style={{ marginTop: '10px' }}>Message:</h3>
-              <input
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                placeholder=""
-                style={{ padding: '10px', width: '90%' }}
-                name="message"
-              />
-              <h3 style={{ marginTop: '10px' }}>Signature:</h3>
-              <input
-                value={signature}
-                onChange={e => setSignature(e.target.value)}
-                placeholder=""
-                style={{ padding: '10px', width: '90%' }}
-                name="signature"
-              />
-              <h3 style={{ marginTop: '10px' }}>Network:</h3>
-              <select
-                value={network}
-                onChange={e => {
-                  setNetwork(e.target.value)
-                  checkWalletType()
-                }}>
-                {networks.map(network => (
-                  <option key={network.name} value={network.nodePath}>
-                    {network.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div>
-            <button
-              onClick={() => {
-                if (!ethers.utils.isAddress(address) || message === '' || signature === '') {
-                  return
-                }
+    <BrowserOnly>
+      {() => {
+        return (
+          <Layout title="Signature debugger" description="">
+            <ThemeProvider>
+              <Box className="container debugger-container">
+                <Box marginTop="16">
+                  <Box
+                    alignItems="center"
+                    flexDirection="column"
+                    textAlign="center"
+                    marginBottom="16">
+                    <Text variant="xlarge" marginBottom="4">
+                      Signature Debugger
+                    </Text>
+                    <Text variant="normal">
+                      Enter signer address, message and signature to validate/debug. The tool will
+                      check possible issues if signature is not valid and try to give you direction
+                      that can help you resolve the issue.
+                    </Text>
+                    <Text variant="normal" marginTop="4" color="positive">
+                      Supports both EOA and smart contract wallet signatures.
+                    </Text>
+                  </Box>
+                  <Box justifyContent="center">
+                    <Box
+                      width="full"
+                      flexDirection="column"
+                      justifyContent="flex-start"
+                      fontSize="medium">
+                      <Box width="full">
+                        <Box flexDirection="column">
+                          <Text variant="medium" marginBottom="2">
+                            Signer address:
+                          </Text>
+                          <TextInput
+                            value={address}
+                            onChange={e => setAddress(e.target.value)}
+                            placeholder="0x..."
+                            name="signerAddress"
+                          />
+                          <Text variant="medium" marginTop="6" marginBottom="2">
+                            Message:
+                          </Text>
+                          <TextArea
+                            value={message}
+                            onChange={e => setMessage(e.target.value)}
+                            placeholder=""
+                            name="message"
+                          />
+                          <Text variant="medium" marginTop="6" marginBottom="2">
+                            Signature:
+                          </Text>
+                          <TextArea
+                            value={signature}
+                            onChange={e => setSignature(e.target.value)}
+                            placeholder=""
+                            name="signature"
+                          />
+                          <Text variant="medium" marginTop="6" marginBottom="2">
+                            Network:
+                          </Text>
+                          <Select
+                            name="network"
+                            labelLocation="top"
+                            onValueChange={val => {
+                              setNetwork(val)
+                              checkWalletType()
+                            }}
+                            value={network}
+                            options={[
+                              ...networks.map(n => ({
+                                label: (
+                                  <Box alignItems="center" gap="2">
+                                    <Text>{n.name}</Text>
+                                  </Box>
+                                ),
+                                value: n.nodePath
+                              }))
+                            ]}
+                          />
+                        </Box>
+                      </Box>
+                      <Box marginTop="12" alignItems="center" justifyContent="center">
+                        <Button
+                          label="Debug"
+                          onClick={() => {
+                            if (
+                              !ethers.utils.isAddress(address) ||
+                              message === '' ||
+                              signature === ''
+                            ) {
+                              return
+                            }
 
-                debug(address, message, signature, 'polygon')
-              }}>
-              Debug
-            </button>
-          </div>
-        </div>
-      </div>
-    </Layout>
+                            debug(address, message, signature, network)
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </ThemeProvider>
+          </Layout>
+        )
+      }}
+    </BrowserOnly>
   )
 }
+
+// For invalid sig, check for cases (to see if it actually matches this way):
+// 1. prefixEIP191Message missing
+// 2. digest hashed as string instead of bytes
+
+// If above are not helpful, then check address (if smart contract or EOA) and
+// give suggestion on how to sign it correctly
 
 const debug = async (address: string, message: string, signature: string, network: string) => {
   const provider = providerForNetwork(network)
@@ -133,13 +175,6 @@ const debug = async (address: string, message: string, signature: string, networ
 const providerForNetwork = (network: string) => {
   return new ethers.providers.JsonRpcProvider(`https://nodes.sequence.app/${network}`)
 }
-
-// For invalid sig, check for cases (to see if it actually matches this way):
-// 1. prefixEIP191Message missing
-// 2. digest hashed as string instead of bytes
-
-// If above are not helpful, then check address (if smart contract or EOA) and
-// give suggestion on how to sign it correctly
 
 const MessagePrefix: string = '\x19Ethereum Signed Message:\n'
 
@@ -161,7 +196,6 @@ const checkScenario_NotPrefixedHash = (
 }
 
 // Dump test data:
-
 ;(async () => {
   const testPrivKey = '0x465d0d758d8c7664d9e1bfa46fb5fb8e27265cb4bc28c0f7752d596910545028'
   const testSigningKey = new SigningKey(testPrivKey)
