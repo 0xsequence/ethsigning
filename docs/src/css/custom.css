@@ -33,3 +33,12 @@
   max-width: 800px;
   min-height: 100vh;
 }
+
+/* Fixes for conflicting css between design system and docusaurus */
+body {
+  background: inherit !important;
+}
+
+article ul li {
+  list-style-type: circle !important;
+}
