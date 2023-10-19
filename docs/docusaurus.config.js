@@ -52,12 +52,12 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/logo.png',
       navbar: {
         title: 'ethsigning.guide',
         logo: {
           alt: 'ethsigning',
-          src: 'img/logo.svg'
+          src: 'img/logo.png'
         },
         items: [
           {

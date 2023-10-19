@@ -34,6 +34,10 @@
   min-height: 100vh;
 }
 
+.navbar__logo img {
+  border-radius: 4px;
+}
+
 /* Fixes for conflicting css between design system and docusaurus */
 body {
   background: inherit !important;

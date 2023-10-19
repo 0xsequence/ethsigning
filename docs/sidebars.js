@@ -20,16 +20,16 @@ const sidebars = {
 
   tutorialSidebar: [
     {
-      type: "category",
-      label: "Signatures in Ethereum",
-      items: ["signatures"],
+      type: 'category',
+      label: 'Signatures in Ethereum',
+      items: ['signatures']
     },
     {
-      type: "link",
-      label: "Validation Debugger",
-      href: "/debugger",
-    },
-  ],
-};
+      type: 'link',
+      label: 'Signature Debugger',
+      href: '/debugger'
+    }
+  ]
+}
 
-module.exports = sidebars;
+module.exports = sidebars
