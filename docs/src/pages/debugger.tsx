@@ -1,5 +1,6 @@
 import '@0xsequence/design-system/styles.css'
 
+import React, { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import {
   concat,
@@ -10,12 +11,13 @@ import {
   toUtf8Bytes
 } from 'ethers/lib/utils'
 import { isValidMessageSignature, validateEIP6492Offchain } from 'ethsigning'
-import React, { useState } from 'react'
 
 import {
   Box,
   Button,
+  CheckmarkIcon,
   Select,
+  Spinner,
   Text,
   TextArea,
   TextInput,
@@ -29,6 +31,10 @@ const networks = [
   { name: 'Ethereum', nodePath: 'mainnet' }
 ]
 
+interface Result {
+  isValid: boolean
+}
+
 export default function Debugger() {
   const [address, setAddress] = useState('')
   const [message, setMessage] = useState('')
@@ -37,7 +43,22 @@ export default function Debugger() {
 
   const [displayNetworkPicker, setDisplayNetworkPicker] = useState(false)
 
+  const [isDebugPending, setIsDebugPending] = useState(false)
+
+  const [result, setResult] = useState<Result | undefined>()
+
   const checkWalletType = () => {}
+
+  const runDebug = async () => {
+    setIsDebugPending(true)
+    const result = await debug(address, message, signature, network)
+    setIsDebugPending(false)
+    setResult({ isValid: result })
+  }
+
+  useEffect(() => {
+    setResult(undefined)
+  }, [address, message, signature, network])
 
   return (
     <BrowserOnly>
@@ -123,22 +144,59 @@ export default function Debugger() {
                           />
                         </Box>
                       </Box>
-                      <Box marginTop="12" alignItems="center" justifyContent="center">
-                        <Button
-                          label="Debug"
-                          onClick={() => {
-                            if (
-                              !ethers.utils.isAddress(address) ||
-                              message === '' ||
-                              signature === ''
-                            ) {
-                              return
-                            }
+                      <Box
+                        style={{ minHeight: '44px' }}
+                        marginTop="12"
+                        alignItems="center"
+                        justifyContent="center">
+                        {isDebugPending ? (
+                          <Spinner />
+                        ) : (
+                          <Button
+                            marginBottom="8"
+                            label="Debug"
+                            onClick={() => {
+                              if (
+                                !ethers.utils.isAddress(address) ||
+                                message === '' ||
+                                signature === ''
+                              ) {
+                                return
+                              }
 
-                            debug(address, message, signature, network)
-                          }}
-                        />
+                              runDebug()
+                            }}></Button>
+                        )}
                       </Box>
+
+                      {result && (
+                        <Box
+                          width="auto"
+                          background="gradientPrimary"
+                          borderColor={result.isValid ? 'positive' : 'negative'}
+                          borderWidth="thick"
+                          borderStyle="solid"
+                          borderRadius="md"
+                          paddingX="6"
+                          paddingY="4">
+                          {result.isValid && (
+                            <Box alignItems="center">
+                              <Box
+                                width="6"
+                                height="6"
+                                background="positive"
+                                alignItems="center"
+                                justifyContent="center"
+                                borderRadius="circle"
+                                marginRight="2">
+                                <CheckmarkIcon color="white" />
+                              </Box>
+                              <Text variant="medium">Signature is valid!</Text>
+                            </Box>
+                          )}
+                          {!result.isValid && <Text variant="medium">Signature is not valid.</Text>}
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Box>
@@ -164,7 +222,7 @@ const debug = async (address: string, message: string, signature: string, networ
 
   if (isValid) {
     console.log('Signature is valid!')
-    return
+    return true
   }
 
   if (checkScenario_NotPrefixedHash) {
