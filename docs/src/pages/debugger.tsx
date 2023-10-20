@@ -21,7 +21,8 @@ import {
   Text,
   TextArea,
   TextInput,
-  ThemeProvider
+  ThemeProvider,
+  WarningIcon
 } from '@0xsequence/design-system'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import Layout from '@theme/Layout'
@@ -33,6 +34,7 @@ const networks = [
 
 interface Result {
   isValid: boolean
+  error?: string
 }
 
 export default function Debugger() {
@@ -50,10 +52,15 @@ export default function Debugger() {
   const checkWalletType = () => {}
 
   const runDebug = async () => {
+    setResult(undefined)
     setIsDebugPending(true)
-    const result = await debug(address, message, signature, network)
+    try {
+      const result = await debug(address, message, signature, network)
+      setResult({ isValid: result })
+    } catch (error) {
+      setResult({ isValid: false, error })
+    }
     setIsDebugPending(false)
-    setResult({ isValid: result })
   }
 
   useEffect(() => {
@@ -172,7 +179,7 @@ export default function Debugger() {
                       {result && (
                         <Box
                           width="auto"
-                          background="gradientPrimary"
+                          background={result.isValid ? 'gradientPrimary' : 'backgroundMuted'}
                           borderColor={result.isValid ? 'positive' : 'negative'}
                           borderWidth="thick"
                           borderStyle="solid"
@@ -182,8 +189,9 @@ export default function Debugger() {
                           {result.isValid && (
                             <Box alignItems="center">
                               <Box
-                                width="6"
-                                height="6"
+                                width="8"
+                                height="8"
+                                minWidth="8"
                                 background="positive"
                                 alignItems="center"
                                 justifyContent="center"
@@ -194,7 +202,30 @@ export default function Debugger() {
                               <Text variant="medium">Signature is valid!</Text>
                             </Box>
                           )}
-                          {!result.isValid && <Text variant="medium">Signature is not valid.</Text>}
+                          {!result.isValid && (
+                            <Box alignItems="center">
+                              <Box
+                                width="8"
+                                height="8"
+                                minWidth="8"
+                                background="warning"
+                                alignItems="center"
+                                justifyContent="center"
+                                borderRadius="circle"
+                                marginRight="2">
+                                <WarningIcon color="negative" />
+                              </Box>
+                              <Box>
+                                {result.error ? (
+                                  <Text style={{ overflowWrap: 'anywhere' }} variant="medium">
+                                    {String(result.error)}
+                                  </Text>
+                                ) : (
+                                  <Text variant="medium">Signature is not valid.</Text>
+                                )}
+                              </Box>
+                            </Box>
+                          )}
                         </Box>
                       )}
                     </Box>
@@ -225,7 +256,7 @@ const debug = async (address: string, message: string, signature: string, networ
     return true
   }
 
-  if (checkScenario_NotPrefixedHash) {
+  if (await checkScenario_NotPrefixedHash(address, message, signature, network)) {
     console.log('not prefixed hash')
   }
 }
