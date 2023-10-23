@@ -10,7 +10,12 @@ import {
   splitSignature,
   toUtf8Bytes
 } from 'ethers/lib/utils'
-import { isValidMessageSignature, validateEIP6492Offchain } from 'ethsigning'
+import {
+  TypedData,
+  isValidMessageSignature,
+  isValidTypedDataSignature,
+  validateEIP6492Offchain
+} from 'ethsigning'
 
 import {
   Box,
@@ -60,9 +65,16 @@ type WalletType = 'EOA' | 'smartContract'
 
 type SigningDataFormat = 'message' | 'typedData'
 
+const typedDataPlaceholder = `{
+  domain : {...},
+  types: {...},
+  message: {...}     
+}
+`
+
 export default function Debugger() {
   const [address, setAddress] = useState('')
-  const [message, setMessage] = useState('')
+  const [signingData, setSigningData] = useState<string>('')
   const [signature, setSignature] = useState('')
   const [network, setNetwork] = useState('polygon')
 
@@ -71,13 +83,17 @@ export default function Debugger() {
     Network[]
   >([])
 
+  const [showNetworkPicker, setShowNetworkPicker] = useState(true)
+
+  const [signingDataFormat, setSigningDataFormat] = useState<SigningDataFormat>('message')
+
   const [isDebugPending, setIsDebugPending] = useState(false)
 
   const [result, setResult] = useState<Result | undefined>()
 
   useEffect(() => {
     setResult(undefined)
-  }, [address, message, signature, network])
+  }, [address, signingData, signature, network, signingDataFormat])
 
   useEffect(() => {
     if (ethers.utils.isAddress(address)) {
@@ -86,6 +102,10 @@ export default function Debugger() {
       checkWalletType(address)
     }
   }, [address])
+
+  useEffect(() => {
+    setSigningData('')
+  }, [signingDataFormat])
 
   const checkWalletType = async (address: string) => {
     const result = await Promise.allSettled(
@@ -107,6 +127,7 @@ export default function Debugger() {
       setWalletType('smartContract')
       setSmartContractWalletDeployedNetworks(deployedNetworks)
     } else {
+      setShowNetworkPicker(false)
       setWalletType('EOA')
     }
   }
@@ -115,7 +136,13 @@ export default function Debugger() {
     setResult(undefined)
     setIsDebugPending(true)
     try {
-      const result = await debug(address, message, signature, network)
+      const result = await debug(
+        address,
+        signature,
+        network,
+        signingDataFormat === 'message' ? (signingData as string) : undefined,
+        signingDataFormat === 'typedData' ? (JSON.parse(signingData) as TypedData) : undefined
+      )
       setResult({ isValid: result })
     } catch (error) {
       setResult({ isValid: false, error })
@@ -157,11 +184,13 @@ export default function Debugger() {
                       <Box width="full">
                         <Box flexDirection="column">
                           <Text variant="medium" marginBottom="2">
-                            Signer address:
+                            Signer address
                           </Text>
                           <TextInput
                             value={address}
-                            onChange={e => setAddress(e.target.value)}
+                            onChange={(e: { target: { value: React.SetStateAction<string> } }) =>
+                              setAddress(e.target.value)
+                            }
                             placeholder="0x..."
                             name="signerAddress"
                           />
@@ -182,45 +211,72 @@ export default function Debugger() {
                               </Text>
                             )}
                           </Box>
-                          <Text variant="medium" marginTop="6" marginBottom="2">
-                            Message:
-                          </Text>
+
+                          <Box marginTop="6" marginBottom="3">
+                            <Button
+                              variant={signingDataFormat === 'message' ? 'primary' : 'base'}
+                              onClick={() => setSigningDataFormat('message')}
+                              size="sm"
+                              label="Message"
+                              marginRight="2"
+                            />
+                            <Button
+                              variant={signingDataFormat === 'message' ? 'base' : 'primary'}
+                              onClick={() => setSigningDataFormat('typedData')}
+                              size="sm"
+                              label="Typed data"
+                            />
+                          </Box>
                           <TextArea
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            placeholder=""
+                            style={{
+                              minHeight: signingDataFormat === 'message' ? '160px' : '300px'
+                            }}
+                            resize
+                            value={signingData}
+                            onChange={e => setSigningData(e.target.value)}
+                            placeholder={
+                              signingDataFormat === 'message'
+                                ? 'Your message'
+                                : typedDataPlaceholder
+                            }
                             name="message"
                           />
                           <Text variant="medium" marginTop="6" marginBottom="2">
-                            Signature:
+                            Signature
                           </Text>
                           <TextArea
+                            minHeight="16"
+                            resize
                             value={signature}
                             onChange={e => setSignature(e.target.value)}
-                            placeholder=""
+                            placeholder="0x..."
                             name="signature"
                           />
-                          <Text variant="medium" marginTop="6" marginBottom="2">
-                            Network:
-                          </Text>
-                          <Select
-                            name="network"
-                            labelLocation="top"
-                            onValueChange={val => {
-                              setNetwork(val)
-                            }}
-                            value={network}
-                            options={[
-                              ...networks.map(n => ({
-                                label: (
-                                  <Box alignItems="center" gap="2">
-                                    <Text>{n.name}</Text>
-                                  </Box>
-                                ),
-                                value: n.nodePath
-                              }))
-                            ]}
-                          />
+                          {showNetworkPicker && (
+                            <Box marginTop="6">
+                              <Box paddingBottom="2">
+                                <Text variant="medium">Network</Text>
+                              </Box>
+                              <Select
+                                name="network"
+                                labelLocation="top"
+                                onValueChange={val => {
+                                  setNetwork(val)
+                                }}
+                                value={network}
+                                options={[
+                                  ...networks.map(n => ({
+                                    label: (
+                                      <Box alignItems="center" gap="2">
+                                        <Text>{n.name}</Text>
+                                      </Box>
+                                    ),
+                                    value: n.nodePath
+                                  }))
+                                ]}
+                              />
+                            </Box>
+                          )}
                         </Box>
                       </Box>
                       <Box
@@ -237,7 +293,7 @@ export default function Debugger() {
                             onClick={() => {
                               if (
                                 !ethers.utils.isAddress(address) ||
-                                message === '' ||
+                                signingData === '' ||
                                 signature === ''
                               ) {
                                 return
@@ -257,7 +313,8 @@ export default function Debugger() {
                           borderStyle="solid"
                           borderRadius="md"
                           paddingX="6"
-                          paddingY="4">
+                          paddingY="4"
+                          marginBottom="10">
                           {result.isValid && (
                             <Box alignItems="center">
                               <Box
@@ -319,16 +376,31 @@ export default function Debugger() {
 // If above are not helpful, then check address (if smart contract or EOA) and
 // give suggestion on how to sign it correctly
 
-const debug = async (address: string, message: string, signature: string, network: string) => {
+const debug = async (
+  address: string,
+  signature: string,
+  network: string,
+  message?: string,
+  typedData?: TypedData
+) => {
   const provider = providerForNetwork(network)
-  const isValid = await isValidMessageSignature(address, message, signature, provider)
+  let isValid = false
+
+  if (message !== undefined) {
+    isValid = await isValidMessageSignature(address, message, signature, provider)
+  } else if (typedData !== undefined) {
+    isValid = await isValidTypedDataSignature(address, typedData, signature, provider)
+  }
 
   if (isValid) {
     console.log('Signature is valid!')
     return true
   }
 
-  if (await checkScenario_NotPrefixedHash(address, message, signature, network)) {
+  if (
+    message !== undefined &&
+    (await checkScenario_NotPrefixedHash(address, message, signature, network))
+  ) {
     console.log('not prefixed hash')
   }
 }
