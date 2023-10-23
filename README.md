@@ -1,8 +1,6 @@
 <p align="center">
-<img src='docs/static/img/logo.png' width='60' height="60" style="border-radius: 8px">
+    <img src="readme.svg" alt="header">
 </p>
-
-<h1 align="center" style="margin-top:-8px">Ethsigning</h1>
 
 Ethsigning helps you validate signatures for both externally owned account (EOA) wallets and smart contract wallets. This includes validation support for:
 

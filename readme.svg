@@ -1,0 +1,29 @@
+<svg fill="none" viewBox="0 0 300 100" width="300" height="150" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="150px">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+        <style>
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+            }
+            .header {
+                color: #456595; 
+                background-image: -webkit-linear-gradient(315deg, #456595 0%, #14b0db 33%, #3646a3 67%); 
+                background-clip: text; 
+                -webkit-background-clip: text; 
+                text-fill-color: transparent; 
+                -webkit-text-fill-color: transparent;
+            }
+        </style>
+
+        <div class="container">
+            <img src='docs/static/img/logo.png' width='60' height="60" style="border-radius: 8px"/>
+            <h1 class="header">Ethsigning</h1>
+        </div>
+    </div>
+  </foreignObject>
+</svg>
