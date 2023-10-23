@@ -27,15 +27,38 @@ import {
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import Layout from '@theme/Layout'
 
-const networks = [
+type Network = { name: string; nodePath: string }
+
+const networks: readonly Network[] = [
+  { name: 'Arbitrum', nodePath: 'arbitrum' },
+  { name: 'Arbitrum Nova', nodePath: 'arbitrum-nova' },
+  { name: 'Avalanche', nodePath: 'avalanche' },
+  { name: 'Base', nodePath: 'base' },
+  { name: 'BNB', nodePath: 'bsc' },
+  { name: 'Ethereum', nodePath: 'mainnet' },
+  { name: 'Gnosis', nodePath: 'gnosis' },
+  { name: 'Homeverse', nodePath: 'homeverse' },
+  { name: 'Optimism', nodePath: 'optimism' },
   { name: 'Polygon', nodePath: 'polygon' },
-  { name: 'Ethereum', nodePath: 'mainnet' }
-]
+  { name: 'Polygon zkEVM', nodePath: 'polygon-zkevm' },
+  { name: 'Arbitrum Goerli', nodePath: 'arbitrum-goerli' },
+  { name: 'Avalanche Testnet', nodePath: 'avalanche-testnet' },
+  { name: 'Base Goerli', nodePath: 'base-goerli' },
+  { name: 'BNB Testnet', nodePath: 'bsc-testnet' },
+  { name: 'Goerli', nodePath: 'goerli' },
+  { name: 'Homeverse Testnet', nodePath: 'homeverse-testnet' },
+  { name: 'Mumbai', nodePath: 'mumbai' },
+  { name: 'Sepolia', nodePath: 'sepolia' }
+] as const
 
 interface Result {
   isValid: boolean
   error?: string
 }
+
+type WalletType = 'EOA' | 'smartContract'
+
+type SigningDataFormat = 'message' | 'typedData'
 
 export default function Debugger() {
   const [address, setAddress] = useState('')
@@ -43,13 +66,50 @@ export default function Debugger() {
   const [signature, setSignature] = useState('')
   const [network, setNetwork] = useState('polygon')
 
-  const [displayNetworkPicker, setDisplayNetworkPicker] = useState(false)
+  const [walletType, setWalletType] = useState<WalletType | undefined>()
+  const [smartContractWalletDeployedNetworks, setSmartContractWalletDeployedNetworks] = useState<
+    Network[]
+  >([])
 
   const [isDebugPending, setIsDebugPending] = useState(false)
 
   const [result, setResult] = useState<Result | undefined>()
 
-  const checkWalletType = () => {}
+  useEffect(() => {
+    setResult(undefined)
+  }, [address, message, signature, network])
+
+  useEffect(() => {
+    if (ethers.utils.isAddress(address)) {
+      setWalletType(undefined)
+      setSmartContractWalletDeployedNetworks([])
+      checkWalletType(address)
+    }
+  }, [address])
+
+  const checkWalletType = async (address: string) => {
+    const result = await Promise.allSettled(
+      networks.map(network => {
+        const provider = providerForNetwork(network.nodePath)
+        return provider.getCode(address)
+      })
+    )
+
+    const deployedNetworks = result
+      .map(r => (r.status === 'fulfilled' ? r.value : '0x'))
+      .map((r, i) => {
+        return { result: r, network: networks[i] }
+      })
+      .filter(r => r.result !== '0x')
+      .map(r => r.network)
+
+    if (deployedNetworks.length > 0) {
+      setWalletType('smartContract')
+      setSmartContractWalletDeployedNetworks(deployedNetworks)
+    } else {
+      setWalletType('EOA')
+    }
+  }
 
   const runDebug = async () => {
     setResult(undefined)
@@ -62,10 +122,6 @@ export default function Debugger() {
     }
     setIsDebugPending(false)
   }
-
-  useEffect(() => {
-    setResult(undefined)
-  }, [address, message, signature, network])
 
   return (
     <BrowserOnly>
@@ -109,6 +165,23 @@ export default function Debugger() {
                             placeholder="0x..."
                             name="signerAddress"
                           />
+                          <Box>
+                            {walletType === 'EOA' && (
+                              <Text variant="medium" fontSize="small" marginTop="2" color="info">
+                                This is an EOA wallet.
+                              </Text>
+                            )}
+                            {walletType === 'smartContract' && (
+                              <Text variant="medium" fontSize="small" marginTop="2" color="info">
+                                This is a smart contract wallet. It's currently deployed on:{' '}
+                                {smartContractWalletDeployedNetworks.map((n, i) =>
+                                  i + 1 !== smartContractWalletDeployedNetworks.length
+                                    ? n.name + ', '
+                                    : n.name + ''
+                                )}
+                              </Text>
+                            )}
+                          </Box>
                           <Text variant="medium" marginTop="6" marginBottom="2">
                             Message:
                           </Text>
@@ -135,7 +208,6 @@ export default function Debugger() {
                             labelLocation="top"
                             onValueChange={val => {
                               setNetwork(val)
-                              checkWalletType()
                             }}
                             value={network}
                             options={[
