@@ -1,0 +1,7 @@
+.debugger-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+  max-width: 800px;
+  min-height: 100vh;
+}
