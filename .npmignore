@@ -4,6 +4,7 @@ src/
 tests/
 
 .prettierrc
+.svg
 
 jest.config.js
 tsconfig.json
