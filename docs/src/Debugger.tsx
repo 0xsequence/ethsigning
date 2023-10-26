@@ -18,6 +18,7 @@ import {
   Box,
   Button,
   CheckmarkIcon,
+  Image,
   Select,
   Spinner,
   Text,
@@ -25,6 +26,9 @@ import {
   TextInput,
   WarningIcon
 } from '@0xsequence/design-system'
+
+import logoUrl from './assets/logo.png'
+import { useNavigate } from 'react-router-dom'
 
 type Network = { name: string; nodePath: string }
 
@@ -67,6 +71,8 @@ const typedDataPlaceholder = `{
 `
 
 export default function Debugger() {
+  const navigate = useNavigate()
+
   const [address, setAddress] = useState('')
   const [signingData, setSigningData] = useState<string>('')
   const [signature, setSignature] = useState('')
@@ -145,7 +151,29 @@ export default function Debugger() {
   }
 
   return (
-    <Box className="container">
+    <Box className="container" paddingBottom="16">
+      <Box alignItems="center" marginBottom="16">
+        <Image
+          style={{ width: '60px', height: '60px' }}
+          src={logoUrl}
+          borderRadius="md"
+          marginRight="4"
+        />
+        <Text className="logo-title" fontSize="large" fontWeight="bold">
+          ethsigning.guide
+        </Text>
+
+        <Text
+          onClick={() => {
+            navigate('/')
+          }}
+          className="underline-text"
+          cursor="pointer"
+          marginLeft="auto">
+          Guide
+        </Text>
+      </Box>
+
       <Box marginTop="16">
         <Box alignItems="center" flexDirection="column" textAlign="center" marginBottom="16">
           <Text variant="xlarge" marginBottom="4">
@@ -382,8 +410,6 @@ const debug = async (
 const providerForNetwork = (network: string) => {
   return new ethers.providers.JsonRpcProvider(`https://nodes.sequence.app/${network}`)
 }
-
-const MessagePrefix: string = '\x19Ethereum Signed Message:\n'
 
 const joinSignature = (signature: ethers.Signature): string => {
   signature = splitSignature(signature)

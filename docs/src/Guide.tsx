@@ -1,28 +1,22 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Button,
-  CheckmarkIcon,
-  Image,
-  Select,
-  Spinner,
-  Text,
-  TextArea,
-  TextInput,
-  WarningIcon
-} from '@0xsequence/design-system'
+import { useState } from 'react'
+import { Box, Button, Image, Text, TextArea } from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useNavigate } from 'react-router-dom'
+import { isValidMessageSignature } from 'ethsigning'
 
 import logoUrl from './assets/logo.png'
 import { ethers } from 'ethers'
 
-export default function Debugger() {
+export default function Guide() {
+  const navigate = useNavigate()
+
   // Code Snippet - create wallet
   const [pk, setPk] = useState<string | undefined>()
   const [address, setAddress] = useState<string | undefined>(undefined)
 
   const codeSnippet_createWallet = `import { ethers } from 'ethers'
+import { isValidMessageSignature } from 'ethsigning'
   
 const wallet = ethers.Wallet.createRandom()
   
@@ -30,7 +24,6 @@ console.log('Your address:', wallet.address)
 // Your address: ${address ?? 'Log will appear here once you run the snippet!'}`
 
   const run_codeSnippet_createWallet = async () => {
-    console.log('asdas')
     const wallet = ethers.Wallet.createRandom()
     setPk(wallet.privateKey)
     setAddress(wallet.address)
@@ -46,9 +39,9 @@ console.log('Your address:', wallet.address)
       : `You didn't set a message yet, add it to input on left.`
   }
 
-const sig = await wallet.signMessage(message)
+const signature = await wallet.signMessage(message)
 
-console.log('Signature:', sig)
+console.log('Signature:', signature)
 // Signature: ${signature ?? 'Log will appear here once you run the snippet!'}`
 
   const run_codeSnippet_signMessage = async () => {
@@ -58,6 +51,30 @@ console.log('Signature:', sig)
     const wallet = new ethers.Wallet(pk)
     const sig = await wallet.signMessage(messageToSign)
     setSignature(sig)
+  }
+
+  // Code Snippet - validate message
+  const provider = new ethers.providers.JsonRpcProvider('https://nodes.sequence.app/mainnet')
+  const [isValidSig, setIsValidSig] = useState<boolean | undefined>()
+
+  const codeSnippet_validateSignature = `const provider = new ethers.providers.JsonRpcProvider('https://nodes.sequence.app/mainnet')
+const isValid = await isValidMessageSignature(wallet.address, message, signature, provider)
+
+console.log('isValid:', isValid)
+// isValid: ${isValidSig ?? 'Log will appear here once you run the snippet!'}`
+
+  const run_codeSnippet_validateSignature = async () => {
+    if (!pk || !messageToSign || !signature) {
+      return
+    }
+    const wallet = new ethers.Wallet(pk)
+    const isValid = await isValidMessageSignature(
+      wallet.address,
+      messageToSign,
+      signature,
+      provider
+    )
+    setIsValidSig(isValid)
   }
 
   return (
@@ -72,12 +89,22 @@ console.log('Signature:', sig)
         <Text className="logo-title" fontSize="large" fontWeight="bold">
           ethsigning.guide
         </Text>
+
+        <Text
+          onClick={() => {
+            navigate('/debugger')
+          }}
+          cursor="pointer"
+          className="underline-text"
+          marginLeft="auto">
+          Signature Debugger
+        </Text>
       </Box>
 
       <Box paddingY="16" textAlign="center" fontSize="xlarge" fontWeight="normal">
         <Text
           as="a"
-          href={'https://github.com/0xsequence/ethsigning'}
+          href="https://github.com/0xsequence/ethsigning"
           target="_blank"
           rel="noreferrer"
           className="underline-text">
@@ -162,8 +189,8 @@ console.log('Signature:', sig)
             rel="noreferrer">
             EIPs
           </Text>{' '}
-          related to signing messages. For a ground-zero understanding and the math behind
-          signatures, you can refer to this{' '}
+          related to signing messages like EIP-191, EIP-1271, and EIP-6492. For a ground-zero
+          understanding and the math behind signatures, you can refer to this{' '}
           <Text
             as="a"
             className="underline-text"
@@ -187,7 +214,7 @@ console.log('Signature:', sig)
 
       <Box marginTop="10" flexDirection="column">
         <Text fontSize="xlarge" fontWeight="semibold">
-          How do you create a signature?
+          How do you sign a message?
         </Text>
         <Text marginTop="4" lineHeight="6">
           Well, you need a wallet and a message! Normally you would use a connector like{' '}
@@ -212,7 +239,11 @@ console.log('Signature:', sig)
           with a random seed.
         </Text>
 
-        <Text fontSize="large" marginTop="6" lineHeight="6">
+        <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="6">
+          For EOAs
+        </Text>
+
+        <Text fontSize="large" marginTop="3" lineHeight="6">
           1. Let's start with generating a wallet using ethers.js (version 5.7.2)
         </Text>
 
@@ -267,11 +298,35 @@ console.log('Signature:', sig)
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
             wrapLines={true}
             showLineNumbers={true}
-            startingLineNumber={7}
+            startingLineNumber={8}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
             style={oneDark}>
             {codeSnippet_SignMessage}
+          </SyntaxHighlighter>
+        </Box>
+
+        <Text fontSize="large" marginTop="4" lineHeight="6">
+          3. Validate the message using "isValidMessageSignature" function from ethsigning package
+        </Text>
+
+        <Box flexDirection="row" alignItems="center" marginTop="6">
+          <Box paddingRight="5">
+            <Button
+              marginTop="4"
+              label="Run ⚒️"
+              onClick={() => {
+                run_codeSnippet_validateSignature()
+              }}></Button>
+          </Box>
+          <SyntaxHighlighter
+            wrapLines
+            showLineNumbers={true}
+            startingLineNumber={14}
+            customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+            language="typescript"
+            style={oneDark}>
+            {codeSnippet_validateSignature}
           </SyntaxHighlighter>
         </Box>
       </Box>
