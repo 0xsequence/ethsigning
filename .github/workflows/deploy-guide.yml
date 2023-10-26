@@ -24,11 +24,11 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm build
+        run: pnpm install
         working-directory: ./docs
 
       - name: Build
-        run: pnpm install
+        run: pnpm build
         working-directory: ./docs
 
       - name: Upload production-ready build files
