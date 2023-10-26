@@ -145,7 +145,7 @@ export default function Debugger() {
   }
 
   return (
-    <Box className="debugger-container">
+    <Box className="container">
       <Box marginTop="16">
         <Box alignItems="center" flexDirection="column" textAlign="center" marginBottom="16">
           <Text variant="xlarge" marginBottom="4">
