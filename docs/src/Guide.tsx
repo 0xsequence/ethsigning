@@ -339,9 +339,9 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Divider />
+      <Divider marginTop="8" />
 
-      <Box marginTop="10" flexDirection="column">
+      <Box marginTop="8" flexDirection="column">
         <Text fontSize="xlarge" fontWeight="semibold">
           How do you sign a message?
         </Text>
@@ -459,9 +459,9 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Divider />
+        <Divider marginTop="12" />
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="12" lineHeight="7">
+        <Text fontSize="large" fontWeight="semibold" marginTop="8" lineHeight="7">
           With a Smart Contract Wallet
         </Text>
 
@@ -559,7 +559,7 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Divider />
+      <Divider marginTop="12" />
 
       <Box marginTop="10" flexDirection="column">
         <Text fontSize="xlarge" fontWeight="semibold">
@@ -758,6 +758,78 @@ const isValidSignature = '0x01' ===
           We've now seen how the <strong>ethsigning</strong> package is able to validate both EOA
           and smart contract wallet signatures in detail, showcasing the utility and ease brought
           about by adhering to standards like ERC-6492.
+        </Text>
+      </Box>
+
+      <Divider marginTop="8" />
+
+      <Box marginTop="10" flexDirection="column">
+        <Text fontSize="large" fontWeight="semibold" lineHeight="7">
+          Recap
+        </Text>
+
+        <Text marginTop="4" marginBottom="4" lineHeight="7">
+          We've gone through the essentials of Ethereum signatures in this guide, covering the
+          basics and diving into some practical examples. We explored how to create signatures with
+          ethers.js for EOAs and Sequence for smart contract wallets, and saw how the ethsigning
+          package can simplify validation.
+        </Text>
+        <Text marginBottom="4" lineHeight="7">
+          We also looked under the hood to understand the mechanisms of signing and validation,
+          touching on relevant ERC standards. This hands-on approach aimed to provide a clearer
+          picture of how signature operations are carried out in Ethereum.{' '}
+        </Text>
+        <Text marginBottom="4" lineHeight="7">
+          The ethsigning package, as demonstrated, is a helpful tool for handling signatures across
+          different types of wallets, making the process more straightforward.
+        </Text>
+
+        <Text marginBottom="4" lineHeight="7">
+          Thank you for exploring this guide on Ethereum signatures. Your journey into the world of
+          blockchain and Ethereum is an exciting one, and we're glad to have been a part of it. Your
+          engagement and curiosity drive the community forward, and we're thankful for that.
+        </Text>
+
+        <Text fontSize="large" fontWeight="semibold" lineHeight="7">
+          Let's Stay Connected! 💜
+        </Text>
+
+        <Text marginTop="4" marginBottom="4" lineHeight="7">
+          If you found this guide helpful and wish to delve deeper on what we are building, or if
+          you have any questions, feel free to reach out and connect with us via following:
+        </Text>
+
+        <Text
+          marginTop="4"
+          marginBottom="4"
+          as="a"
+          href="https://github.com/0xsequence"
+          target="_blank"
+          rel="noreferrer"
+          className="underline-text">
+          github.com/0xsequence
+        </Text>
+
+        <Text
+          marginTop="4"
+          marginBottom="4"
+          as="a"
+          href="https://sequence.xyz/"
+          target="_blank"
+          rel="noreferrer"
+          className="underline-text">
+          sequence.xyz/
+        </Text>
+
+        <Text
+          marginTop="4"
+          marginBottom="4"
+          as="a"
+          href="https://discord.gg/sequence"
+          target="_blank"
+          rel="noreferrer"
+          className="underline-text">
+          Sequence discord channel
         </Text>
       </Box>
     </Box>
