@@ -76,7 +76,7 @@ export default function Debugger() {
   const [address, setAddress] = useState('')
   const [signingData, setSigningData] = useState<string>('')
   const [signature, setSignature] = useState('')
-  const [network, setNetwork] = useState('polygon')
+  const [network, setNetwork] = useState('mainnet')
 
   const [walletType, setWalletType] = useState<WalletType | undefined>()
   const [smartContractWalletDeployedNetworks, setSmartContractWalletDeployedNetworks] = useState<
@@ -99,6 +99,7 @@ export default function Debugger() {
     if (ethers.utils.isAddress(address) && signature !== '') {
       setWalletType(undefined)
       setSmartContractWalletDeployedNetworks([])
+      setShowNetworkPicker(true)
       checkWalletType(address, signature)
     }
   }, [address, signature])
@@ -130,7 +131,6 @@ export default function Debugger() {
       if (!isCounterfactual(signature)) {
         setShowNetworkPicker(false)
         setWalletType('EOA')
-        console.log('asdasdas')
       } else {
         setShowNetworkPicker(true)
         setWalletType('smartContract')
