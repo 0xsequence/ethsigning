@@ -751,16 +751,13 @@ const isValidSignature = '0x01' ===
           Part 2: Validating the Signature
         </Text>
         <Text marginBottom="4" lineHeight="7">
-          In this part, we validate the signature by doing an <strong>eth_call</strong> with related
-          params.
+          Here we validate the signature by doing an <strong>eth_call</strong> with related params.
         </Text>
 
         <Text marginBottom="4" lineHeight="7">
-          We've now demystified the steps involved in preparing a message digest and validating a
-          signature. This segment mirrored the process we explored in the EOA signature section,
-          offering a reiteration and deeper understanding of these crucial operations. Despite some
-          steps being condensed into pseudo-code for brevity, the essence of the operations was
-          thoroughly examined.
+          We've now seen how the <strong>ethsigning</strong> package is able to validate both EOA
+          and smart contract wallet signatures in detail, showcasing the utility and ease brought
+          about by adhering to standards like ERC-6492.
         </Text>
       </Box>
     </Box>
