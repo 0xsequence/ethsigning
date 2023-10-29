@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "0xsequence": "^1.2.9",
     "@0xsequence/design-system": "^1.0.17",
     "ethers": "5.7.2",
     "ethsigning": "^0.0.6",
