@@ -161,35 +161,66 @@ console.log('isValid:', isValid)
   const codeSnippet_ethersInnerFlattened = `const message = 'Test'
 const privateKey = '...'
 
-// 1. Create digest
+// 1. Preparing the digest
 const EIP191Prefix = "\\x19Ethereum Signed Message:\\n";
   
 const messageBytes = toUtf8Bytes(message)
 const digest = keccak256(concat([
     toUtf8Bytes(EIP191Prefix),
-    toUtf8Bytes(String(message.length)),
-    message
+    toUtf8Bytes(String(messageBytes.length)),
+    messageBytes
 ]));
   
-// 2. Sign digest
-const keyPair = getCurve().keyFromPrivate(arrayify(this.privateKey));
+// 2. Signing digest
 const digestBytes = arrayify(digest);
 if (digestBytes.length !== 32) {
-    throw("bad digest length", "digest", digest);
+  throw("bad digest length", "digest", digest);
 }
+const keyPair = getCurve().keyFromPrivate(arrayify(this.privateKey));
 const signedDigest = keyPair.sign(digestBytes, ...);
-const splittedSignature = splitSignature({
+const splitSig = splitSignature({
     recoveryParam: signedDigest.recoveryParam,
     r: hexZeroPad("0x" + signedDigest.r.toString(16), 32),
     s: hexZeroPad("0x" + signedDigest.s.toString(16), 32),
 })
-  
+
 const signature = hexlify(concat([
-    splittedSignature.r,
-    splittedSignature.s,
-    (splittedSignature.recoveryParam ? "0x1c": "0x1b")
-]));
+    splitSig.r,
+    splitSig.s,
+    (splitSig.recoveryParam ? "0x1c": "0x1b")
+]))
 `
+
+  const codeSnippet_ethsigningInnerFlattened = `const provider = new ethers.providers.JsonRpcProvider('...')
+const signerAddress = "0x..."
+const message = 'Test'
+const signature = "0x..."
+
+const EIP_6492_OFFCHAIN_DEPLOY_CODE = "..."
+
+// 1. Preparing the digest
+const EIP191Prefix = "\\x19Ethereum Signed Message:\\n";
+  
+const messageBytes = toUtf8Bytes(message)
+const digest = keccak256(concat([
+    toUtf8Bytes(EIP191Prefix),
+    toUtf8Bytes(String(messageBytes.length)),
+    messageBytes
+]));
+
+const digestBytes = arrayify(digest)
+
+// 2. Validating signature
+const isValidSignature = '0x01' ===
+(await provider.call({
+  data: concat([
+    EIP_6492_OFFCHAIN_DEPLOY_CODE,
+    new AbiCoder().encode(
+      ['address', 'bytes32', 'bytes'],
+      [signerAddress, digestBytes, signature]
+    )
+  ])
+}))`
 
   return (
     <Box className="container" paddingBottom="16">
@@ -293,7 +324,8 @@ const signature = hexlify(concat([
             rel="noreferrer">
             ethsigning
           </Text>{' '}
-          validation helper library. <br />
+          validation helper package.
+          <br />
           We will then take a deeper look on inner workings of the methods used and touch on the{' '}
           <Text
             as="a"
@@ -535,22 +567,22 @@ const signature = hexlify(concat([
         </Text>
 
         <Text marginTop="4" lineHeight="7">
-          In this section, we'll look into the methods we used above work in a lower level for EOA
-          wallets (since this process is standardized), and for Smart Contract wallet we will
-          explain how the related ERCs make it possible for contracts to validate signatures.
-          Finally, we will see how <strong>ethsigning</strong> library allows us to use the same
-          validation method for both kind of wallets. Through it we will touch on the related ERCs.
+          In this section, for EOAs we'll look into the methods we used above work in a lower level
+          (since this process is standardized), and for Smart Contract wallets we will see what
+          makes it possible for the contracts to validate signatures. Finally, we will see how{' '}
+          <strong>ethsigning</strong> package allows us to use the same validation method for both
+          kind of wallets. Through it we will touch on the related ERCs.
         </Text>
 
         <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
-          For EOAs
+          EOAs
         </Text>
 
         <Text marginTop="4" marginBottom="4" lineHeight="7">
           Below is the <strong>signMessage</strong> method from ethers.js presented in an expanded
-          line-by-line format (and partly pseudo since we do not have imports etc.). We used it in
-          its original form in the first part of the previous section. <br /> Give it a look! Next,
-          we will explain what each part does.
+          line-by-line format (and partly pseudo-code since it skips some setup for brevity). We
+          used it in its original form in the first part of the previous section. <br /> Give it a
+          look! Next, we will explain what each part does.
         </Text>
 
         <SyntaxHighlighter
@@ -564,7 +596,7 @@ const signature = hexlify(concat([
         </SyntaxHighlighter>
 
         <Text fontSize="large" marginTop="4" marginBottom="4" lineHeight="7">
-          Part 1: Creating Digest
+          Part 1: Preparing the Digest
         </Text>
         <Text marginBottom="4" lineHeight="7">
           In this part, we are preparing the message 'Test' for signing by creating a hash digest:
@@ -622,7 +654,7 @@ const signature = hexlify(concat([
         <Divider />
 
         <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
-          For Smart Contract Wallets
+          Smart Contract Wallets
         </Text>
 
         <Text marginTop="4" marginBottom="4" lineHeight="7">
@@ -669,18 +701,66 @@ const signature = hexlify(concat([
           call. Specifically, the verifier should make an <strong>eth_call</strong> to a multicall
           contract that first calls the factory with <strong>factoryCalldata</strong> to deploy the
           contract if it isn't already deployed, and then calls <strong>isValidSignature</strong> on
-          the contract with the unwrapped signature. This process ensures that the contract is
-          deployed and ready for signature verification as per the ERC-1271 standard.
+          the contract with the unwrapped signature.
         </Text>
         <Text marginBottom="4" lineHeight="7">
-          Furthermore, ERC-6492 facilitates both on-chain and off-chain validation, providing
-          flexibility in signature verification processes.
+          ERC-6492 also facilitates both on-chain and off-chain validation, and is backward
+          compatible with previous work on signature validation, and allows for easy verification of
+          all signature types, including EOA signatures and typed data providing flexibility in
+          signature verification processes.
         </Text>
 
         <Divider />
 
         <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
           Validation
+        </Text>
+
+        <Text marginTop="4" marginBottom="4" lineHeight="7">
+          As you've seen, we've used <strong>ethsigning</strong> package for validating both EOA and
+          smart contract wallet signatures. This capability of the package is implemented easily
+          thanks to ERC-6492 we mentioned above.
+        </Text>
+
+        <Text marginBottom="4" lineHeight="7">
+          Now let's take a look under the hood. We will again go over the source code in an expanded
+          line-by-line format (and partly pseudo-code since it skips some setup for brevity) to get
+          a better understanding.
+        </Text>
+
+        <SyntaxHighlighter
+          wrapLines
+          showLineNumbers={true}
+          startingLineNumber={1}
+          customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+          language="typescript"
+          style={oneDark}>
+          {codeSnippet_ethsigningInnerFlattened}
+        </SyntaxHighlighter>
+
+        <Text fontSize="large" marginTop="4" marginBottom="4" lineHeight="7">
+          Part 1: Preparing the Digest
+        </Text>
+        <Text marginBottom="4" lineHeight="7">
+          In this part, we are preparing the message 'Test' for validation comparison by creating a
+          hash digest. As you may have noticed this part is exactly same as the first part of the
+          section where we created hash digest for the signature.
+        </Text>
+
+        <Text fontSize="large" marginBottom="4" lineHeight="7">
+          Part 2: Validating the Signature
+        </Text>
+        <Text marginBottom="4" lineHeight="7">
+          In this part, we validate the signature by doing an <strong>eth_call</strong> with related
+          params.
+        </Text>
+
+        <Text marginBottom="4" lineHeight="7">
+          We've now demystified the steps involved in preparing a message digest and validating a
+          signature. This segment mirrored the process we explored in the EOA signature section,
+          offering a reiteration and deeper understanding of these crucial operations. Despite some
+          steps being condensed into pseudo-code for brevity, the essence of the operations was
+          thoroughly examined.
         </Text>
       </Box>
     </Box>
