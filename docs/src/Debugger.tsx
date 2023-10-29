@@ -96,18 +96,18 @@ export default function Debugger() {
   }, [address, signingData, signature, network, signingDataFormat])
 
   useEffect(() => {
-    if (ethers.utils.isAddress(address)) {
+    if (ethers.utils.isAddress(address) && signature !== '') {
       setWalletType(undefined)
       setSmartContractWalletDeployedNetworks([])
-      checkWalletType(address)
+      checkWalletType(address, signature)
     }
-  }, [address])
+  }, [address, signature])
 
   useEffect(() => {
     setSigningData('')
   }, [signingDataFormat])
 
-  const checkWalletType = async (address: string) => {
+  const checkWalletType = async (address: string, signature: string) => {
     const result = await Promise.allSettled(
       networks.map(network => {
         const provider = providerForNetwork(network.nodePath)
@@ -127,8 +127,14 @@ export default function Debugger() {
       setWalletType('smartContract')
       setSmartContractWalletDeployedNetworks(deployedNetworks)
     } else {
-      setShowNetworkPicker(false)
-      setWalletType('EOA')
+      if (!isCounterfactual(signature)) {
+        setShowNetworkPicker(false)
+        setWalletType('EOA')
+        console.log('asdasdas')
+      } else {
+        setShowNetworkPicker(true)
+        setWalletType('smartContract')
+      }
     }
   }
 
@@ -211,12 +217,11 @@ export default function Debugger() {
                   )}
                   {walletType === 'smartContract' && (
                     <Text variant="medium" fontSize="small" marginTop="2" color="info">
-                      This is a smart contract wallet. It's currently deployed on:{' '}
-                      {smartContractWalletDeployedNetworks.map((n, i) =>
-                        i + 1 !== smartContractWalletDeployedNetworks.length
-                          ? n.name + ', '
-                          : n.name + ''
-                      )}
+                      This is a smart contract wallet.{' '}
+                      {smartContractWalletDeployedNetworks.length > 0
+                        ? `It's currently deployed on: ` +
+                          smartContractWalletDeployedNetworks.map(n => n.name).join(', ')
+                        : `It is not deployed on any networks yet.`}
                     </Text>
                   )}
                 </Box>
@@ -252,7 +257,9 @@ export default function Debugger() {
                   Signature
                 </Text>
                 <TextArea
-                  minHeight="16"
+                  style={{
+                    minHeight: '160px'
+                  }}
                   resize
                   value={signature}
                   onChange={e => setSignature(e.target.value)}
@@ -357,7 +364,16 @@ export default function Debugger() {
                           {String(result.error)}
                         </Text>
                       ) : (
-                        <Text variant="medium">Signature is not valid.</Text>
+                        <Box>
+                          <Text variant="medium">Signature is not valid.</Text>
+                          {showNetworkPicker && (
+                            <Text variant="medium">
+                              <br />
+                              If you believe address, message and signature values are correct,
+                              please make sure you have selected the correct network.
+                            </Text>
+                          )}
+                        </Box>
                       )}
                     </Box>
                   </Box>
@@ -369,6 +385,14 @@ export default function Debugger() {
       </Box>
     </Box>
   )
+}
+
+const isCounterfactual = (signature: string): boolean => {
+  const ERC6492_DETECTION_SUFFIX =
+    '6492649264926492649264926492649264926492649264926492649264926492'
+  ;('6492649264926492649264926492649264926492649264926492649264926492')
+
+  return signature.slice(-ERC6492_DETECTION_SUFFIX.length) === ERC6492_DETECTION_SUFFIX
 }
 
 // For invalid sig, check for cases (to see if it actually matches this way):
