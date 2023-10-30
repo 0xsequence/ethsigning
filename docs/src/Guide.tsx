@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { Box, Button, Divider, Image, Text, TextArea } from '@0xsequence/design-system'
+import {
+  ArrowRightIcon,
+  Box,
+  Button,
+  Divider,
+  Image,
+  Text,
+  TextArea
+} from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useNavigate } from 'react-router-dom'
