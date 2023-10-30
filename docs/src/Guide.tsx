@@ -15,6 +15,8 @@ import { isValidMessageSignature } from 'ethsigning'
 import { sequence } from '0xsequence'
 
 import logoUrl from './assets/logo.png'
+import sequenceLogo from './assets/sequence-logo-horizontal-dark.svg'
+
 import { ethers } from 'ethers'
 
 export default function Guide() {
@@ -868,6 +870,13 @@ const isValidSignature = '0x01' ===
           className="underline-text">
           Sequence discord channel
         </Text>
+      </Box>
+
+      <Box gap="2" alignItems="center" justifyContent="center" marginTop="6">
+        <Text variant="small" color="text100">
+          Made with ❤️ by
+        </Text>
+        <Image src={sequenceLogo} style={{ height: '16px' }} />
       </Box>
     </Box>
   )
