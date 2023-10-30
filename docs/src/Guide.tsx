@@ -380,7 +380,8 @@ const isValidSignature = '0x01' ===
           <Box paddingRight="5">
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_createWallet()
               }}></Button>
@@ -418,7 +419,8 @@ const isValidSignature = '0x01' ===
             />
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_signMessage()
               }}></Button>
@@ -443,7 +445,8 @@ const isValidSignature = '0x01' ===
           <Box paddingRight="5">
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_validateSignature()
               }}></Button>
@@ -473,7 +476,8 @@ const isValidSignature = '0x01' ===
           <Box paddingRight="5">
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_createWalletSequence()
               }}></Button>
@@ -512,7 +516,8 @@ const isValidSignature = '0x01' ===
             />
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_signMessageSequence()
               }}></Button>
@@ -537,7 +542,8 @@ const isValidSignature = '0x01' ===
           <Box paddingRight="5">
             <Button
               marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_validateSignatureSequence()
               }}></Button>
