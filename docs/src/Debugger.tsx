@@ -158,26 +158,27 @@ export default function Debugger() {
 
   return (
     <Box className="container" paddingBottom="16">
-      <Box alignItems="center" marginBottom="16">
-        <Image
-          style={{ width: '60px', height: '60px' }}
-          src={logoUrl}
-          borderRadius="md"
-          marginRight="4"
-        />
-        <Text className="logo-title" fontSize="large" fontWeight="bold">
-          ethsigning.guide
-        </Text>
+      <Box className="logo-container" alignItems="center" justifyContent="space-between">
+        <Box alignItems="center">
+          <Image
+            className="logo"
+            style={{ width: '60px', height: '60px' }}
+            src={logoUrl}
+            borderRadius="md"
+            marginRight="4"
+          />
+          <Text className="logo-title" fontSize="large" fontWeight="bold">
+            ethsigning.guide
+          </Text>
+        </Box>
 
-        <Text
+        <Button
+          variant="feature"
+          label="Guide"
           onClick={() => {
             navigate('/')
           }}
-          className="underline-text"
-          cursor="pointer"
-          marginLeft="auto">
-          Guide
-        </Text>
+        />
       </Box>
 
       <Box marginTop="16">
