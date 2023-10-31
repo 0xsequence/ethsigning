@@ -5,7 +5,16 @@
   background-position: 0 0, 15px 15px;
 }
 
+.pattern-light {
+  background-image: radial-gradient(#ecebeb 0.75px, transparent 0.75px),
+    radial-gradient(#e6e6e6 0.75px, #f4f4f4 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
 .container {
+  display: flex;
+  flex-direction: column;
   margin-left: auto;
   margin-right: auto;
   padding: 16px;

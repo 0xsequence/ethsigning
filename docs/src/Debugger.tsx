@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
-import {
-  concat,
-  hexlify,
-  keccak256,
-  SigningKey,
-  splitSignature,
-  toUtf8Bytes
-} from 'ethers/lib/utils'
+import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
 import {
   TypedData,
   isValidMessageSignature,
@@ -19,16 +12,21 @@ import {
   Button,
   CheckmarkIcon,
   Image,
+  MoonIcon,
   Select,
   Spinner,
+  SunIcon,
   Text,
   TextArea,
   TextInput,
-  WarningIcon
+  WarningIcon,
+  useTheme
 } from '@0xsequence/design-system'
+import { useNavigate } from 'react-router-dom'
 
 import logoUrl from './assets/logo.png'
-import { useNavigate } from 'react-router-dom'
+import sequenceLogo from './assets/sequence-logo-horizontal-dark.svg'
+import sequenceLogoLight from './assets/sequence-logo-horizontal-light.svg'
 
 type Network = { name: string; nodePath: string }
 
@@ -72,6 +70,7 @@ const typedDataPlaceholder = `{
 
 export default function Debugger() {
   const navigate = useNavigate()
+  const { theme, setTheme } = useTheme()
 
   const [address, setAddress] = useState('')
   const [signingData, setSigningData] = useState<string>('')
@@ -172,6 +171,13 @@ export default function Debugger() {
           </Text>
         </Box>
 
+        <Button
+          marginLeft="auto"
+          marginRight="4"
+          variant="base"
+          onClick={() => (theme === 'dark' ? setTheme('light') : setTheme('dark'))}
+          leftIcon={theme === 'dark' ? SunIcon : MoonIcon}
+        />
         <Button
           variant="feature"
           label="Guide"
@@ -384,6 +390,22 @@ export default function Debugger() {
           </Box>
         </Box>
       </Box>
+
+      <Box
+        gap="2"
+        alignItems="flex-end"
+        justifyContent="center"
+        flexGrow="1"
+        marginTop="16"
+        marginBottom="8">
+        <Text variant="small" color="text100">
+          Made with ❤️ by
+        </Text>
+        <Image
+          src={theme === 'dark' ? sequenceLogo : sequenceLogoLight}
+          style={{ height: '16px' }}
+        />
+      </Box>
     </Box>
   )
 }
@@ -398,7 +420,6 @@ const isCounterfactual = (signature: string): boolean => {
 
 // For invalid sig, check for cases (to see if it actually matches this way):
 // 1. prefixEIP191Message missing
-// 2. digest hashed as string instead of bytes
 
 // If above are not helpful, then check address (if smart contract or EOA) and
 // give suggestion on how to sign it correctly
@@ -436,12 +457,6 @@ const providerForNetwork = (network: string) => {
   return new ethers.providers.JsonRpcProvider(`https://nodes.sequence.app/${network}`)
 }
 
-const joinSignature = (signature: ethers.Signature): string => {
-  signature = splitSignature(signature)
-
-  return hexlify(concat([signature.r, signature.s, signature.recoveryParam ? '0x1c' : '0x1b']))
-}
-
 const checkScenario_NotPrefixedHash = (
   address: string,
   message: string,
@@ -453,19 +468,24 @@ const checkScenario_NotPrefixedHash = (
   return validateEIP6492Offchain(provider, address, notPrefixedHash, signature)
 }
 
-// Dump test data:
-;(async () => {
-  const testPrivKey = '0x465d0d758d8c7664d9e1bfa46fb5fb8e27265cb4bc28c0f7752d596910545028'
-  const testSigningKey = new SigningKey(testPrivKey)
-  const testEthersWallet = new ethers.Wallet(testPrivKey)
-  const testMessage = 'Test Test Test'
-  const testMessageValidSig = await testEthersWallet.signMessage(testMessage)
-  const testMessageInvaliSig_notPrefixed = joinSignature(
-    testSigningKey.signDigest(keccak256(toUtf8Bytes(testMessage)))
-  )
+// const joinSignature = (signature: ethers.Signature): string => {
+//   signature = splitSignature(signature)
 
-  console.log('testWalletAddr:', testEthersWallet.address)
-  console.log('testMessage:', testMessage)
-  console.log('testMessageValidSig:', testMessageValidSig)
-  console.log('testMessageInvalidSig_notPrefixed:', testMessageInvaliSig_notPrefixed)
-})()
+//   return hexlify(concat([signature.r, signature.s, signature.recoveryParam ? '0x1c' : '0x1b']))
+// }
+// Test data:
+// ;(async () => {
+//   const testPrivKey = '0x465d0d758d8c7664d9e1bfa46fb5fb8e27265cb4bc28c0f7752d596910545028'
+//   const testSigningKey = new SigningKey(testPrivKey)
+//   const testEthersWallet = new ethers.Wallet(testPrivKey)
+//   const testMessage = 'Test Test Test'
+//   const testMessageValidSig = await testEthersWallet.signMessage(testMessage)
+//   const testMessageInvaliSig_notPrefixed = joinSignature(
+//     testSigningKey.signDigest(keccak256(toUtf8Bytes(testMessage)))
+//   )
+
+//   console.log('testWalletAddr:', testEthersWallet.address)
+//   console.log('testMessage:', testMessage)
+//   console.log('testMessageValidSig:', testMessageValidSig)
+//   console.log('testMessageInvalidSig_notPrefixed:', testMessageInvaliSig_notPrefixed)
+// })()

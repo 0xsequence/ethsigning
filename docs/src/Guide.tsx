@@ -5,11 +5,14 @@ import {
   Button,
   Divider,
   Image,
+  MoonIcon,
+  SunIcon,
   Text,
-  TextArea
+  TextArea,
+  useTheme
 } from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { coldarkDark, coldarkCold } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useNavigate } from 'react-router-dom'
 import { isValidMessageSignature } from 'ethsigning'
 import { sequence } from '0xsequence'
@@ -17,9 +20,12 @@ import { ethers } from 'ethers'
 
 import logoUrl from './assets/logo.png'
 import sequenceLogo from './assets/sequence-logo-horizontal-dark.svg'
+import sequenceLogoLight from './assets/sequence-logo-horizontal-light.svg'
 
 export default function Guide() {
   const navigate = useNavigate()
+  const { theme, setTheme } = useTheme()
+  const syntaxHighlighterTheme = theme === 'dark' ? coldarkDark : coldarkCold
 
   // Common
   const provider = new ethers.providers.JsonRpcProvider('https://nodes.sequence.app/mainnet')
@@ -248,6 +254,13 @@ const isValidSignature = '0x01' ===
         </Box>
 
         <Button
+          marginLeft="auto"
+          marginRight="4"
+          variant="base"
+          onClick={() => (theme === 'dark' ? setTheme('light') : setTheme('dark'))}
+          leftIcon={theme === 'dark' ? SunIcon : MoonIcon}
+        />
+        <Button
           variant="feature"
           label="Signature Debugger"
           onClick={() => {
@@ -405,12 +418,11 @@ const isValidSignature = '0x01' ===
             />
           </Box>
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={1}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_createWallet}
           </SyntaxHighlighter>
         </Box>
@@ -448,12 +460,11 @@ const isValidSignature = '0x01' ===
 
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-            wrapLines={true}
             showLineNumbers={true}
             startingLineNumber={8}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_SignMessage}
           </SyntaxHighlighter>
         </Box>
@@ -477,12 +488,11 @@ const isValidSignature = '0x01' ===
             />
           </Box>
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={14}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_validateSignature}
           </SyntaxHighlighter>
         </Box>
@@ -512,12 +522,11 @@ const isValidSignature = '0x01' ===
             />
           </Box>
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={1}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_createWalletSequence}
           </SyntaxHighlighter>
         </Box>
@@ -555,12 +564,11 @@ const isValidSignature = '0x01' ===
 
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-            wrapLines={true}
             showLineNumbers={true}
             startingLineNumber={11}
             customStyle={{ maxHeight: '300px', borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_SignMessageSequence}
           </SyntaxHighlighter>
         </Box>
@@ -584,12 +592,11 @@ const isValidSignature = '0x01' ===
             />
           </Box>
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={17}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_validateSignatureSequence}
           </SyntaxHighlighter>
         </Box>
@@ -630,12 +637,11 @@ const isValidSignature = '0x01' ===
 
         <Box marginBottom="6">
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={1}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_ethersInnerFlattened}
           </SyntaxHighlighter>
         </Box>
@@ -781,12 +787,11 @@ const isValidSignature = '0x01' ===
 
         <Box marginBottom="6">
           <SyntaxHighlighter
-            wrapLines
             showLineNumbers={true}
             startingLineNumber={1}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
             language="typescript"
-            style={oneDark}>
+            style={syntaxHighlighterTheme}>
             {codeSnippet_ethsigningInnerFlattened}
           </SyntaxHighlighter>
         </Box>
@@ -892,11 +897,14 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Box gap="2" alignItems="center" justifyContent="center" marginTop="6">
+      <Box gap="2" alignItems="center" justifyContent="center" marginY="8">
         <Text variant="small" color="text100">
           Made with ❤️ by
         </Text>
-        <Image src={sequenceLogo} style={{ height: '16px' }} />
+        <Image
+          src={theme === 'dark' ? sequenceLogo : sequenceLogoLight}
+          style={{ height: '16px' }}
+        />
       </Box>
     </Box>
   )
