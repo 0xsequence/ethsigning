@@ -13,11 +13,10 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useNavigate } from 'react-router-dom'
 import { isValidMessageSignature } from 'ethsigning'
 import { sequence } from '0xsequence'
+import { ethers } from 'ethers'
 
 import logoUrl from './assets/logo.png'
 import sequenceLogo from './assets/sequence-logo-horizontal-dark.svg'
-
-import { ethers } from 'ethers'
 
 export default function Guide() {
   const navigate = useNavigate()
@@ -234,9 +233,10 @@ const isValidSignature = '0x01' ===
 
   return (
     <Box className="container" paddingBottom="16">
-      <Box alignItems="center" justifyContent="space-between">
+      <Box className="logo-container" alignItems="center" justifyContent="space-between">
         <Box alignItems="center">
           <Image
+            className="logo"
             style={{ width: '60px', height: '60px' }}
             src={logoUrl}
             borderRadius="md"
@@ -257,13 +257,14 @@ const isValidSignature = '0x01' ===
       </Box>
 
       <Box
+        paddingX="4"
         paddingY="16"
         textAlign="center"
         fontSize="xlarge"
         fontWeight="normal"
-        background="backgroundSecondary"
+        background="backgroundBackdrop"
         borderRadius="lg"
-        marginY="10">
+        marginY="16">
         <Text
           as="a"
           variant="xlarge"
@@ -272,7 +273,7 @@ const isValidSignature = '0x01' ===
           target="_blank"
           rel="noreferrer"
           className="underline-text">
-          A library to make signature validation easier
+          A package to make signature validation easier
         </Text>
 
         <Text as="div" variant="xlarge" color="text100" marginY="4">
@@ -291,7 +292,7 @@ const isValidSignature = '0x01' ===
       </Box>
 
       <Box flexDirection="column">
-        <Text as="h2" variant="large" color="text100" fontWeight="bold">
+        <Text as="h2" variant="large" color="text100" fontWeight="bold" marginTop="4">
           What are signatures?
         </Text>
 
@@ -389,7 +390,20 @@ const isValidSignature = '0x01' ===
           1. Let's start with generating a wallet using ethers.js (version 5.7.2)
         </Text>
 
-        <Box marginBottom="6">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_createWallet()
+              }}
+            />
+          </Box>
           <SyntaxHighlighter
             wrapLines
             showLineNumbers={true}
@@ -399,33 +413,38 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_createWallet}
           </SyntaxHighlighter>
-
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_createWallet()
-              }}
-            />
-          </Box>
         </Box>
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
         </Text>
 
-        <Box marginBottom="6">
-          <TextArea
-            labelLocation="hidden"
-            background="backgroundContrast"
-            value={messageToSign}
-            onChange={e => setMessageToSign(e.target.value)}
-            placeholder="Your message"
-            name="message"
-            marginBottom="4"
-          />
+        <Box className="snippet-container" flexDirection="row" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            flexDirection="column"
+            width="1/3"
+            minWidth="1/3"
+            paddingRight="5"
+            alignItems="center"
+            justifyContent="center">
+            <TextArea
+              labelLocation="hidden"
+              background="backgroundContrast"
+              value={messageToSign}
+              onChange={e => setMessageToSign(e.target.value)}
+              placeholder="Your message"
+              name="message"
+              marginBottom="4"
+            />
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_signMessage()
+              }}
+            />
+          </Box>
 
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
@@ -437,24 +456,26 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_SignMessage}
           </SyntaxHighlighter>
-
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_signMessage()
-              }}
-            />
-          </Box>
         </Box>
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
         </Text>
 
-        <Box marginBottom="6">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_validateSignature()
+              }}
+            />
+          </Box>
           <SyntaxHighlighter
             wrapLines
             showLineNumbers={true}
@@ -464,21 +485,11 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_validateSignature}
           </SyntaxHighlighter>
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_validateSignature()
-              }}
-            />
-          </Box>
         </Box>
 
-        <Divider marginY="8" />
+        <Divider marginY="4" />
 
-        <Text as="h2" variant="large" color="text100" font-weight="bold">
+        <Text as="h3" variant="medium" color="text50">
           With a Smart Contract Wallet
         </Text>
 
@@ -486,7 +497,20 @@ const isValidSignature = '0x01' ===
           1. Let's start with connecting to wallet using Sequence
         </Text>
 
-        <Box marginBottom="6">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_createWalletSequence()
+              }}
+            />
+          </Box>
           <SyntaxHighlighter
             wrapLines
             showLineNumbers={true}
@@ -496,33 +520,38 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_createWalletSequence}
           </SyntaxHighlighter>
-
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_createWalletSequence()
-              }}
-            />
-          </Box>
         </Box>
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
         </Text>
 
-        <Box marginBottom="6">
-          <TextArea
-            labelLocation="hidden"
-            background="backgroundContrast"
-            value={messageToSignSequence}
-            onChange={e => setMessageToSignSequence(e.target.value)}
-            placeholder="Your message"
-            name="message"
-            marginBottom="4"
-          />
+        <Box className="snippet-container" flexDirection="row" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            flexDirection="column"
+            width="1/3"
+            minWidth="1/3"
+            paddingRight="5"
+            alignItems="center"
+            justifyContent="center">
+            <TextArea
+              labelLocation="hidden"
+              background="backgroundContrast"
+              value={messageToSignSequence}
+              onChange={e => setMessageToSignSequence(e.target.value)}
+              placeholder="Your message"
+              name="message"
+              marginBottom="4"
+            />
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_signMessageSequence()
+              }}
+            />
+          </Box>
 
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
@@ -534,24 +563,26 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_SignMessageSequence}
           </SyntaxHighlighter>
-
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_signMessageSequence()
-              }}
-            />
-          </Box>
         </Box>
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
         </Text>
 
-        <Box marginBottom="6">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
+            <Button
+              label="Run"
+              rightIcon={ArrowRightIcon}
+              onClick={() => {
+                run_codeSnippet_validateSignatureSequence()
+              }}
+            />
+          </Box>
           <SyntaxHighlighter
             wrapLines
             showLineNumbers={true}
@@ -561,17 +592,6 @@ const isValidSignature = '0x01' ===
             style={oneDark}>
             {codeSnippet_validateSignatureSequence}
           </SyntaxHighlighter>
-
-          <Box justifyContent="flex-end" marginTop="4">
-            <Button
-              variant="primary"
-              label="Run"
-              rightIcon={ArrowRightIcon}
-              onClick={() => {
-                run_codeSnippet_validateSignatureSequence()
-              }}
-            />
-          </Box>
         </Box>
 
         <Text as="p" variant="normal" color="text80">
@@ -679,9 +699,9 @@ const isValidSignature = '0x01' ===
           created by the private key associated with your Ethereum address.
         </Text>
 
-        <Divider marginY="8" />
+        <Divider marginY="4" />
 
-        <Text as="h2" variant="large" color="text100" fontWeight="bold">
+        <Text as="h3" variant="medium" color="text50">
           Smart Contract Wallets
         </Text>
 
@@ -741,9 +761,9 @@ const isValidSignature = '0x01' ===
           signature verification processes.
         </Text>
 
-        <Divider marginY="8" />
+        <Divider marginY="4" />
 
-        <Text as="h2" variant="large" color="text100" fontWeight="bold">
+        <Text as="h3" variant="medium" color="text50">
           Validation
         </Text>
 
@@ -830,7 +850,7 @@ const isValidSignature = '0x01' ===
         <Divider marginY="8" />
 
         <Text as="h2" variant="large" color="text100" fontWeight="bold" marginBottom="6">
-          Let's Stay Connected! 💜
+          Let's Stay Connected!
         </Text>
 
         <Text as="p" variant="normal" color="text80">
