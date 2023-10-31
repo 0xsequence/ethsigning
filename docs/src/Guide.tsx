@@ -609,7 +609,7 @@ const isValidSignature = '0x01' ===
 
       <Divider marginY="8" />
 
-      <Box marginTop="10" flexDirection="column">
+      <Box flexDirection="column">
         <Text as="h2" variant="large" fontWeight="bold" color="text100">
           Behind the Interface
         </Text>
