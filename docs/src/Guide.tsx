@@ -1,13 +1,22 @@
 import { useState } from 'react'
-import { Box, Button, Divider, Image, Text, TextArea } from '@0xsequence/design-system'
+import {
+  ArrowRightIcon,
+  Box,
+  Button,
+  Divider,
+  Image,
+  Text,
+  TextArea
+} from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useNavigate } from 'react-router-dom'
 import { isValidMessageSignature } from 'ethsigning'
 import { sequence } from '0xsequence'
+import { ethers } from 'ethers'
 
 import logoUrl from './assets/logo.png'
-import { ethers } from 'ethers'
+import sequenceLogo from './assets/sequence-logo-horizontal-dark.svg'
 
 export default function Guide() {
   const navigate = useNavigate()
@@ -224,52 +233,56 @@ const isValidSignature = '0x01' ===
 
   return (
     <Box className="container" paddingBottom="16">
-      <Box alignItems="center" marginBottom="16">
-        <Image
-          style={{ width: '60px', height: '60px' }}
-          src={logoUrl}
-          borderRadius="md"
-          marginRight="4"
-        />
-        <Text className="logo-title" fontSize="large" fontWeight="bold">
-          ethsigning.guide
-        </Text>
+      <Box className="logo-container" alignItems="center" justifyContent="space-between">
+        <Box alignItems="center">
+          <Image
+            className="logo"
+            style={{ width: '60px', height: '60px' }}
+            src={logoUrl}
+            borderRadius="md"
+            marginRight="4"
+          />
+          <Text className="logo-title" fontSize="large" fontWeight="bold">
+            ethsigning.guide
+          </Text>
+        </Box>
 
-        <Text
+        <Button
+          variant="feature"
+          label="Signature Debugger"
           onClick={() => {
             navigate('/debugger')
           }}
-          cursor="pointer"
-          className="underline-text"
-          marginLeft="auto">
-          Signature Debugger
-        </Text>
+        />
       </Box>
 
-      <Box paddingY="16" textAlign="center" fontSize="xlarge" fontWeight="normal">
+      <Box
+        paddingX="4"
+        paddingY="16"
+        textAlign="center"
+        fontSize="xlarge"
+        fontWeight="normal"
+        background="backgroundBackdrop"
+        borderRadius="lg"
+        marginY="16">
         <Text
           as="a"
+          variant="xlarge"
+          color="text100"
           href="https://github.com/0xsequence/ethsigning"
           target="_blank"
           rel="noreferrer"
           className="underline-text">
-          A library to make signature validation easier
+          A package to make signature validation easier
         </Text>
-        <Text
-          fontSize="large"
-          color="text100"
-          style={{
-            fontStyle: 'italic',
-            display: 'block',
-            marginTop: '20px',
-            marginBottom: '10px'
-          }}>
+
+        <Text as="div" variant="xlarge" color="text100" marginY="4">
           +
         </Text>
-        <Text>
+
+        <Text variant="xlarge" color="text100">
           An interactive guide on Ethereum signatures{' '}
           <Text
-            fontSize="xlarge"
             marginLeft="2"
             style={{ position: 'relative', top: '4px' }}
             className="text-gradient-clip">
@@ -278,12 +291,12 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Box marginTop="10" flexDirection="column">
-        <Text fontSize="xlarge" fontWeight="semibold">
+      <Box flexDirection="column">
+        <Text as="h2" variant="large" color="text100" fontWeight="bold" marginTop="4">
           What are signatures?
         </Text>
 
-        <Text marginTop="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           In Ethereum, a signature is a cryptographic proof used to verify the identity of the
           sender and ensure that a message or transaction remains unchanged during transit, which is
           fundamental for the secure operation of the network. <br />
@@ -339,13 +352,14 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Divider marginTop="8" />
+      <Divider marginY="8" />
 
-      <Box marginTop="8" flexDirection="column">
-        <Text fontSize="xlarge" fontWeight="semibold">
+      <Box flexDirection="column">
+        <Text as="h2" variant="large" color="text100" fontWeight="bold">
           How do you sign a message?
         </Text>
-        <Text marginTop="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           Well, you need a wallet and a message! Normally you would use a connector like{' '}
           <Text
             as="a"
@@ -368,22 +382,27 @@ const isValidSignature = '0x01' ===
           with a random seed.
         </Text>
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
+        <Text as="h3" variant="medium" color="text50">
           With EOAs
         </Text>
 
-        <Text fontSize="large" marginTop="3" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           1. Let's start with generating a wallet using ethers.js (version 5.7.2)
         </Text>
 
-        <Box flexDirection="row" alignItems="center" marginTop="6">
-          <Box paddingRight="5">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_createWallet()
-              }}></Button>
+              }}
+            />
           </Box>
           <SyntaxHighlighter
             wrapLines
@@ -396,12 +415,13 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Text fontSize="large" marginTop="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
         </Text>
 
-        <Box flexDirection="row" marginTop="6">
+        <Box className="snippet-container" flexDirection="row" marginBottom="6">
           <Box
+            className="snippet-controls"
             flexDirection="column"
             width="1/3"
             minWidth="1/3"
@@ -415,14 +435,17 @@ const isValidSignature = '0x01' ===
               onChange={e => setMessageToSign(e.target.value)}
               placeholder="Your message"
               name="message"
+              marginBottom="4"
             />
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_signMessage()
-              }}></Button>
+              }}
+            />
           </Box>
+
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
             wrapLines={true}
@@ -435,18 +458,23 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Text fontSize="large" marginTop="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
         </Text>
 
-        <Box flexDirection="row" alignItems="center" marginTop="6">
-          <Box paddingRight="5">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_validateSignature()
-              }}></Button>
+              }}
+            />
           </Box>
           <SyntaxHighlighter
             wrapLines
@@ -459,24 +487,29 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Divider marginTop="12" />
+        <Divider marginY="4" />
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="8" lineHeight="7">
+        <Text as="h3" variant="medium" color="text50">
           With a Smart Contract Wallet
         </Text>
 
-        <Text fontSize="large" marginTop="3" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           1. Let's start with connecting to wallet using Sequence
         </Text>
 
-        <Box flexDirection="row" alignItems="center" marginTop="6">
-          <Box paddingRight="5">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_createWalletSequence()
-              }}></Button>
+              }}
+            />
           </Box>
           <SyntaxHighlighter
             wrapLines
@@ -489,19 +522,19 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Text fontSize="large" marginTop="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
         </Text>
 
-        <Box flexDirection="row" marginTop="6">
+        <Box className="snippet-container" flexDirection="row" marginBottom="6">
           <Box
+            className="snippet-controls"
             flexDirection="column"
             width="1/3"
             minWidth="1/3"
             paddingRight="5"
             alignItems="center"
-            justifyContent="center"
-            style={{ maxHeight: '300px' }}>
+            justifyContent="center">
             <TextArea
               labelLocation="hidden"
               background="backgroundContrast"
@@ -509,14 +542,17 @@ const isValidSignature = '0x01' ===
               onChange={e => setMessageToSignSequence(e.target.value)}
               placeholder="Your message"
               name="message"
+              marginBottom="4"
             />
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_signMessageSequence()
-              }}></Button>
+              }}
+            />
           </Box>
+
           <SyntaxHighlighter
             lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
             wrapLines={true}
@@ -529,18 +565,23 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Text fontSize="large" marginTop="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
         </Text>
 
-        <Box flexDirection="row" alignItems="center" marginTop="6">
-          <Box paddingRight="5">
+        <Box className="snippet-container" flexDirection="row" alignItems="center" marginBottom="6">
+          <Box
+            className="snippet-controls"
+            justifyContent="flex-end"
+            marginTop="4"
+            paddingRight="5">
             <Button
-              marginTop="4"
-              label="Run ⚒️"
+              label="Run"
+              rightIcon={ArrowRightIcon}
               onClick={() => {
                 run_codeSnippet_validateSignatureSequence()
-              }}></Button>
+              }}
+            />
           </Box>
           <SyntaxHighlighter
             wrapLines
@@ -553,20 +594,20 @@ const isValidSignature = '0x01' ===
           </SyntaxHighlighter>
         </Box>
 
-        <Text marginTop="8" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           Now that we have an idea on what pieces and tools to use to sign and validate a message,
           next let's dive a bit deeper on what's happening behind the interface.
         </Text>
       </Box>
 
-      <Divider marginTop="12" />
+      <Divider marginY="8" />
 
       <Box marginTop="10" flexDirection="column">
-        <Text fontSize="xlarge" fontWeight="semibold">
+        <Text as="h2" variant="large" fontWeight="bold" color="text100">
           Behind the Interface
         </Text>
 
-        <Text marginTop="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           In this section, for EOAs we'll look into the methods we used above work in a lower level
           (since this process is standardized), and for Smart Contract wallets we will see what
           makes it possible for the contracts to validate signatures. Finally, we will see how{' '}
@@ -574,35 +615,41 @@ const isValidSignature = '0x01' ===
           kind of wallets. Through it we will touch on the related ERCs.
         </Text>
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
-          EOAs
-        </Text>
+        <Box>
+          <Text as="h3" variant="medium" color="text50">
+            EOAs
+          </Text>
 
-        <Text marginTop="4" marginBottom="4" lineHeight="7">
-          Below is the <strong>signMessage</strong> method from ethers.js presented in an expanded
-          line-by-line format (and partly pseudo-code since it skips some setup for brevity). We
-          used it in its original form in the first part of the previous section. <br /> Give it a
-          look! Next, we will explain what each part does.
-        </Text>
+          <Text as="p" variant="normal" color="text80">
+            Below is the <strong>signMessage</strong> method from ethers.js presented in an expanded
+            line-by-line format (and partly pseudo-code since it skips some setup for brevity). We
+            used it in its original form in the first part of the previous section. <br /> Give it a
+            look! Next, we will explain what each part does.
+          </Text>
+        </Box>
 
-        <SyntaxHighlighter
-          wrapLines
-          showLineNumbers={true}
-          startingLineNumber={1}
-          customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
-          language="typescript"
-          style={oneDark}>
-          {codeSnippet_ethersInnerFlattened}
-        </SyntaxHighlighter>
+        <Box marginBottom="6">
+          <SyntaxHighlighter
+            wrapLines
+            showLineNumbers={true}
+            startingLineNumber={1}
+            customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+            language="typescript"
+            style={oneDark}>
+            {codeSnippet_ethersInnerFlattened}
+          </SyntaxHighlighter>
+        </Box>
 
-        <Text fontSize="large" marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 1: Preparing the Digest
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           In this part, we are preparing the message 'Test' for signing by creating a hash digest:
         </Text>
-        <Text marginBottom="4" lineHeight="7">
-          Preparing the Message (Lines 7-12): <br />- Here we see{' '}
+
+        <Text as="p" variant="normal" color="text80">
+          <Text fontWeight="bold">Preparing the Message (Lines 7-12):</Text> Here we see{' '}
           <Text
             as="a"
             className="underline-text"
@@ -613,51 +660,52 @@ const isValidSignature = '0x01' ===
           </Text>{' '}
           in action. This requires a specific prefix for signed messages to ensure signed messages
           cannot be used as valid presigned transaction. This prefix is "\x19Ethereum Signed
-          Message:\n". <br />- The message and the prefix are converted to byte arrays, concatenated
-          together along with the message length, and then hashed using the keccak256 function to
-          create a digest of the message.
+          Message:\n". <br />
+          The message and the prefix are converted to byte arrays, concatenated together along with
+          the message length, and then hashed using the keccak256 function to create a digest of the
+          message.
         </Text>
 
-        <Text fontSize="large" marginBottom="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 2: Signing the Digest
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           In this part, we sign the generated digest using the private key:
         </Text>
-        <Text marginBottom="4" lineHeight="7">
-          Creating a Key Pair (Line 15):
-          <br />
-          - A key pair object is created from the private key which will be used for signing the
-          digest. <br />
-          Preparing the Digest (Lines 16-19): <br />
-          - The digest is converted to a byte array and its length is checked to ensure it is 32
-          bytes, which is the required length for signing.
-          <br />
-          Signing the Digest (Lines 20-25):
-          <br />
-          - The digest is signed using the sign method of the key pair object to generate the r, s,
-          and recoveryParam values of the signature.
-          <br />
-          Formatting the Signature (Lines 27-31):
-          <br />
-          - The signature is formatted by concatenating the r, s, and recoveryParam values into a
-          single hexadecimal string. The recoveryParam is encoded as 0x1c if it's 1, and 0x1b if
-          it's 0. <br />
+
+        <Text as="p" variant="normal" color="text80">
+          <Text fontWeight="bold">Creating a Key Pair (Line 15):</Text> A key pair object is created
+          from the private key which will be used for signing the digest. Preparing the Digest
+          (Lines 16-19): The digest is converted to a byte array and its length is checked to ensure
+          it is 32 bytes, which is the required length for signing.
         </Text>
 
-        <Text marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
+          <Text fontWeight="bold">Signing the Digest (Lines 20-25):</Text>
+          The digest is signed using the sign method of the key pair object to generate the r, s,
+          and recoveryParam values of the signature.
+        </Text>
+
+        <Text as="p" variant="normal" color="text80">
+          <Text fontWeight="bold">Formatting the Signature (Lines 27-31):</Text> The signature is
+          formatted by concatenating the r, s, and recoveryParam values into a single hexadecimal
+          string. The recoveryParam is encoded as 0x1c if it's 1, and 0x1b if it's 0.
+        </Text>
+
+        <Text as="p" variant="normal" color="text80">
           Now we have a complete Ethereum signature for the message 'Test' generated using a private
           key. This signature can be shared with others who can use it to verify that it was indeed
           created by the private key associated with your Ethereum address.
         </Text>
 
-        <Divider />
+        <Divider marginY="4" />
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
+        <Text as="h3" variant="medium" color="text50">
           Smart Contract Wallets
         </Text>
 
-        <Text marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           Smart contract wallets bring about a level of flexibility and customization that is not
           available with EOAs. Unlike EOAs where the signature validation logic is standardized,
           smart contract wallets, by implementing{' '}
@@ -673,7 +721,8 @@ const isValidSignature = '0x01' ===
           smart contract itself. This allows for a variety of signature schemes and additional
           authorization logic.
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           Another important standard for smart contract wallets is{' '}
           <Text
             as="a"
@@ -691,7 +740,8 @@ const isValidSignature = '0x01' ===
           for instance, during login or other interactive processes. ERC-6492 brings a systematic
           way to validate signatures from such yet-to-be-deployed smart contract wallets.
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           The core of this standard extends the ERC-1271 standard to handle predeploy contracts. It
           adds a wrapper signature format that signing contracts may use before they're deployed,
           allowing for signature verification. This involves a unique wrapper format detected via a
@@ -703,98 +753,107 @@ const isValidSignature = '0x01' ===
           contract if it isn't already deployed, and then calls <strong>isValidSignature</strong> on
           the contract with the unwrapped signature.
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           ERC-6492 also facilitates both on-chain and off-chain validation, and is backward
           compatible with previous work on signature validation, and allows for easy verification of
           all signature types, including EOA signatures and typed data providing flexibility in
           signature verification processes.
         </Text>
 
-        <Divider />
+        <Divider marginY="4" />
 
-        <Text fontSize="large" fontWeight="semibold" marginTop="6" lineHeight="7">
+        <Text as="h3" variant="medium" color="text50">
           Validation
         </Text>
 
-        <Text marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           As you've seen, we've used <strong>ethsigning</strong> package for validating both EOA and
           smart contract wallet signatures. This capability of the package is implemented easily
           thanks to ERC-6492 we mentioned above.
         </Text>
 
-        <Text marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           Now let's take a look under the hood. We will again go over the source code in an expanded
           line-by-line format (and partly pseudo-code since it skips some setup for brevity) to get
           a better understanding.
         </Text>
 
-        <SyntaxHighlighter
-          wrapLines
-          showLineNumbers={true}
-          startingLineNumber={1}
-          customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
-          language="typescript"
-          style={oneDark}>
-          {codeSnippet_ethsigningInnerFlattened}
-        </SyntaxHighlighter>
+        <Box marginBottom="6">
+          <SyntaxHighlighter
+            wrapLines
+            showLineNumbers={true}
+            startingLineNumber={1}
+            customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+            language="typescript"
+            style={oneDark}>
+            {codeSnippet_ethsigningInnerFlattened}
+          </SyntaxHighlighter>
+        </Box>
 
-        <Text fontSize="large" marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 1: Preparing the Digest
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           In this part, we are preparing the message 'Test' for validation comparison by creating a
           hash digest. As you may have noticed this part is exactly same as the first part of the
           section where we created hash digest for the signature.
         </Text>
 
-        <Text fontSize="large" marginBottom="4" lineHeight="7">
+        <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 2: Validating the Signature
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           Here we validate the signature by doing an <strong>eth_call</strong> with related params.
         </Text>
 
-        <Text marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           We've now seen how the <strong>ethsigning</strong> package is able to validate both EOA
           and smart contract wallet signatures in detail, showcasing the utility and ease brought
           about by adhering to standards like ERC-6492.
         </Text>
       </Box>
 
-      <Divider marginTop="8" />
+      <Divider marginY="8" />
 
-      <Box marginTop="10" flexDirection="column">
-        <Text fontSize="large" fontWeight="semibold" lineHeight="7">
+      <Box flexDirection="column">
+        <Text as="h2" variant="large" color="text100" fontWeight="bold" marginBottom="6">
           Recap
         </Text>
 
-        <Text marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           We've gone through the essentials of Ethereum signatures in this guide, covering the
           basics and diving into some practical examples. We explored how to create signatures with
           ethers.js for EOAs and Sequence for smart contract wallets, and saw how the ethsigning
           package can simplify validation.
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           We also looked under the hood to understand the mechanisms of signing and validation,
           touching on relevant ERC standards. This hands-on approach aimed to provide a clearer
           picture of how signature operations are carried out in Ethereum.{' '}
         </Text>
-        <Text marginBottom="4" lineHeight="7">
+
+        <Text as="p" variant="normal" color="text80">
           The ethsigning package, as demonstrated, is a helpful tool for handling signatures across
           different types of wallets, making the process more straightforward.
         </Text>
 
-        <Text marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           Thank you for exploring this guide on Ethereum signatures. Your journey into the world of
           blockchain and Ethereum is an exciting one, and we're glad to have been a part of it. Your
           engagement and curiosity drive the community forward, and we're thankful for that.
         </Text>
 
-        <Text fontSize="large" fontWeight="semibold" lineHeight="7">
-          Let's Stay Connected! 💜
+        <Divider marginY="8" />
+
+        <Text as="h2" variant="large" color="text100" fontWeight="bold" marginBottom="6">
+          Let's Stay Connected!
         </Text>
 
-        <Text marginTop="4" marginBottom="4" lineHeight="7">
+        <Text as="p" variant="normal" color="text80">
           If you found this guide helpful and wish to delve deeper on what we are building, or if
           you have any questions, feel free to reach out and connect with us via following:
         </Text>
@@ -831,6 +890,13 @@ const isValidSignature = '0x01' ===
           className="underline-text">
           Sequence discord channel
         </Text>
+      </Box>
+
+      <Box gap="2" alignItems="center" justifyContent="center" marginTop="6">
+        <Text variant="small" color="text100">
+          Made with ❤️ by
+        </Text>
+        <Image src={sequenceLogo} style={{ height: '16px' }} />
       </Box>
     </Box>
   )
