@@ -113,6 +113,10 @@ p {
     height: 36px;
   }
   .logo-container button span {
-    font-size: var(--font-sizes-small) !important;
+    font-size: var(--font-sizes-xsmall) !important;
+  }
+
+  .theme-switch-button {
+    margin-right: 0;
   }
 }

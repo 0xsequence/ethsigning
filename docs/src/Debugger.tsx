@@ -172,6 +172,7 @@ export default function Debugger() {
         </Box>
 
         <Button
+          className="theme-switch-button"
           marginLeft="auto"
           marginRight="4"
           variant="base"

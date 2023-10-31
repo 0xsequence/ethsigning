@@ -254,6 +254,7 @@ const isValidSignature = '0x01' ===
         </Box>
 
         <Button
+          className="theme-switch-button"
           marginLeft="auto"
           marginRight="4"
           variant="base"
