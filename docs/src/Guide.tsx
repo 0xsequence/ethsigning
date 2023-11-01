@@ -12,7 +12,12 @@ import {
   useTheme
 } from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { coldarkDark, coldarkCold } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {
+  coldarkDark,
+  coldarkCold,
+  base16AteliersulphurpoolLight,
+  duotoneSpace
+} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { useNavigate } from 'react-router-dom'
 import { isValidMessageSignature } from 'ethsigning'
 import { sequence } from '0xsequence'
@@ -26,6 +31,7 @@ export default function Guide() {
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
   const syntaxHighlighterTheme = theme === 'dark' ? coldarkDark : coldarkCold
+  const logTheme = theme === 'dark' ? duotoneSpace : base16AteliersulphurpoolLight
 
   // Common
   const provider = new ethers.providers.JsonRpcProvider('https://nodes.sequence.app/mainnet')
@@ -39,8 +45,8 @@ import { isValidMessageSignature } from 'ethsigning'
   
 const wallet = ethers.Wallet.createRandom()
   
-console.log('Your address:', wallet.address)
-// Your address: ${address ?? 'Log will appear here once you run the snippet!'}`
+console.log('Wallet address:', wallet.address)
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_createWallet = async () => {
     const wallet = ethers.Wallet.createRandom()
@@ -61,7 +67,7 @@ console.log('Your address:', wallet.address)
 const signature = await wallet.signMessage(message)
 
 console.log('Signature:', signature)
-// Signature: ${signature ?? 'Log will appear here once you run the snippet!'}`
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_signMessage = async () => {
     if (!pk || !messageToSign) {
@@ -79,7 +85,7 @@ console.log('Signature:', signature)
 const isValid = await isValidMessageSignature(wallet.address, message, signature, provider)
 
 console.log('isValid:', isValid)
-// isValid: ${isValidSig ?? 'Log will appear here once you run the snippet!'}`
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_validateSignature = async () => {
     if (!pk || !messageToSign || !signature) {
@@ -108,10 +114,7 @@ const connectDetails = await wallet.connect({ app: 'ethsigning.guide' })
 
 console.log('connected:', connectDetails.connected)
 console.log('address:', connectDetails.session.accountAddress)
-// connected: ${connectDetails?.connected ?? 'Log will appear here once you run the snippet!'}
-// address: ${
-    connectDetails?.session?.accountAddress ?? 'Log will appear here once you run the snippet!'
-  }`
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_createWalletSequence = async () => {
     const wallet = sequence.initWallet({ defaultNetwork: 'mainnet' })
@@ -132,7 +135,7 @@ console.log('address:', connectDetails.session.accountAddress)
 const signature = await wallet.getSigner().signMessage(message)
 
 console.log('Signature:', signature)
-// Signature: ${signatureSequence ?? 'Log will appear here once you run the snippet!'}`
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_signMessageSequence = async () => {
     const wallet = sequence.initWallet({ defaultNetwork: 'mainnet' })
@@ -152,7 +155,7 @@ const address = await wallet.getSigner().getAddress()
 const isValid = await isValidMessageSignature(address, message, signature, provider)
 
 console.log('isValid:', isValid)
-// isValid: ${isValidSigSequence ?? 'Log will appear here once you run the snippet!'}`
+// Logs will appear below once you run the snippet`
 
   const run_codeSnippet_validateSignatureSequence = async () => {
     const wallet = sequence.initWallet({ defaultNetwork: 'mainnet' })
@@ -427,6 +430,21 @@ const isValidSignature = '0x01' ===
             {codeSnippet_createWallet}
           </SyntaxHighlighter>
         </Box>
+        {address && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+              style={logTheme}>
+              {'Wallet address: ' + address}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
@@ -460,7 +478,6 @@ const isValidSignature = '0x01' ===
           </Box>
 
           <SyntaxHighlighter
-            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
             showLineNumbers={true}
             startingLineNumber={8}
             customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
@@ -469,6 +486,21 @@ const isValidSignature = '0x01' ===
             {codeSnippet_SignMessage}
           </SyntaxHighlighter>
         </Box>
+        {signature && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+              style={logTheme}>
+              {'Signature: ' + signature}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
@@ -497,6 +529,21 @@ const isValidSignature = '0x01' ===
             {codeSnippet_validateSignature}
           </SyntaxHighlighter>
         </Box>
+        {isValidSig && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+              style={logTheme}>
+              {'isValid: ' + isValidSig}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Divider marginY="4" />
 
@@ -531,6 +578,22 @@ const isValidSignature = '0x01' ===
             {codeSnippet_createWalletSequence}
           </SyntaxHighlighter>
         </Box>
+        {connectDetails && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+              style={logTheme}>
+              {`connected: ${connectDetails.connected}
+address: ${connectDetails.session?.accountAddress}`}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           2. Add your message here and run the snippet to sign your message.
@@ -573,6 +636,21 @@ const isValidSignature = '0x01' ===
             {codeSnippet_SignMessageSequence}
           </SyntaxHighlighter>
         </Box>
+        {signatureSequence && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1', maxHeight: '200px' }}
+              style={logTheme}>
+              {'Signature: ' + signatureSequence}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           3. Validate the message using "isValidMessageSignature" function from ethsigning package
@@ -601,6 +679,21 @@ const isValidSignature = '0x01' ===
             {codeSnippet_validateSignatureSequence}
           </SyntaxHighlighter>
         </Box>
+        {isValidSigSequence && (
+          <Box flexDirection="column" marginBottom="6">
+            <Text variant="normal" color="text100" fontWeight="bold" marginBottom="2">
+              Logs:
+            </Text>
+            <SyntaxHighlighter
+              lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+              wrapLines={true}
+              showLineNumbers={false}
+              customStyle={{ borderRadius: '10px', margin: '0', flexGrow: '1' }}
+              style={logTheme}>
+              {'isValid: ' + isValidSigSequence}
+            </SyntaxHighlighter>
+          </Box>
+        )}
 
         <Text as="p" variant="normal" color="text80">
           Now that we have an idea on what pieces and tools to use to sign and validate a message,
