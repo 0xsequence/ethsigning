@@ -9,7 +9,8 @@ import {
   SunIcon,
   Text,
   TextArea,
-  useTheme
+  useTheme,
+  useToast
 } from '@0xsequence/design-system'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import {
@@ -30,6 +31,7 @@ import sequenceLogoLight from './assets/sequence-logo-horizontal-light.svg'
 export default function Guide() {
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
+  const toast = useToast()
   const syntaxHighlighterTheme = theme === 'dark' ? coldarkDark : coldarkCold
   const logTheme = theme === 'dark' ? duotoneSpace : base16AteliersulphurpoolLight
 
@@ -70,7 +72,12 @@ console.log('Signature:', signature)
 // Logs will appear below once you run the snippet`
 
   const run_codeSnippet_signMessage = async () => {
-    if (!pk || !messageToSign) {
+    if (!pk) {
+      toast({ variant: 'error', title: 'Please run the previous snippet first' })
+      return
+    }
+    if (!messageToSign) {
+      toast({ variant: 'error', title: 'Please enter a message' })
       return
     }
     const wallet = new ethers.Wallet(pk)
@@ -89,6 +96,7 @@ console.log('isValid:', isValid)
 
   const run_codeSnippet_validateSignature = async () => {
     if (!pk || !messageToSign || !signature) {
+      toast({ variant: 'error', title: 'Please run the previous snippet first' })
       return
     }
     const wallet = new ethers.Wallet(pk)
@@ -139,7 +147,12 @@ console.log('Signature:', signature)
 
   const run_codeSnippet_signMessageSequence = async () => {
     const wallet = sequence.initWallet({ defaultNetwork: 'mainnet' })
-    if (!wallet.isConnected || !messageToSignSequence) {
+    if (!wallet.isConnected) {
+      toast({ variant: 'error', title: 'Please run the previous snippet first' })
+      return
+    }
+    if (!messageToSignSequence) {
+      toast({ variant: 'error', title: 'Please enter a message' })
       return
     }
 
@@ -160,6 +173,7 @@ console.log('isValid:', isValid)
   const run_codeSnippet_validateSignatureSequence = async () => {
     const wallet = sequence.initWallet({ defaultNetwork: 'mainnet' })
     if (!wallet.isConnected || !messageToSignSequence || !signatureSequence) {
+      toast({ variant: 'error', title: 'Please run the previous snippet first' })
       return
     }
 
