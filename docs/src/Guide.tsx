@@ -721,7 +721,6 @@ address: ${connectDetails.session?.accountAddress}`}
         <Text as="h2" variant="large" fontWeight="bold" color="text100">
           Behind the Interface
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           In this section, for EOAs we'll look into the methods we used above work in a lower level
           (since this process is standardized), and for Smart Contract wallets we will see what
@@ -729,7 +728,6 @@ address: ${connectDetails.session?.accountAddress}`}
           <strong>ethsigning</strong> package allows us to use the same validation method for both
           kind of wallets. Through it we will touch on the related ERCs.
         </Text>
-
         <Box>
           <Text as="h3" variant="medium" color="text50">
             EOAs
@@ -742,7 +740,6 @@ address: ${connectDetails.session?.accountAddress}`}
             look! Next, we will explain what each part does.
           </Text>
         </Box>
-
         <Box marginBottom="6">
           <SyntaxHighlighter
             showLineNumbers={true}
@@ -753,15 +750,12 @@ address: ${connectDetails.session?.accountAddress}`}
             {codeSnippet_ethersInnerFlattened}
           </SyntaxHighlighter>
         </Box>
-
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 1: Preparing the Digest
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           In this part, we are preparing the message 'Test' for signing by creating a hash digest:
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           <Text fontWeight="bold">Preparing the Message (Lines 7-12):</Text> Here we see{' '}
           <Text
@@ -779,46 +773,37 @@ address: ${connectDetails.session?.accountAddress}`}
           the message length, and then hashed using the keccak256 function to create a digest of the
           message.
         </Text>
-
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 2: Signing the Digest
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           In this part, we sign the generated digest using the private key:
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           <Text fontWeight="bold">Creating a Key Pair (Line 15):</Text> A key pair object is created
           from the private key which will be used for signing the digest. Preparing the Digest
           (Lines 16-19): The digest is converted to a byte array and its length is checked to ensure
           it is 32 bytes, which is the required length for signing.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           <Text fontWeight="bold">Signing the Digest (Lines 20-25):</Text>
           The digest is signed using the sign method of the key pair object to generate the r, s,
           and recoveryParam values of the signature.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           <Text fontWeight="bold">Formatting the Signature (Lines 27-31):</Text> The signature is
           formatted by concatenating the r, s, and recoveryParam values into a single hexadecimal
           string. The recoveryParam is encoded as 0x1c if it's 1, and 0x1b if it's 0.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           Now we have a complete Ethereum signature for the message 'Test' generated using a private
           key. This signature can be shared with others who can use it to verify that it was indeed
           created by the private key associated with your Ethereum address.
         </Text>
-
         <Divider marginY="4" />
-
         <Text as="h3" variant="medium" color="text50">
           Smart Contract Wallets
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           Smart contract wallets bring about a level of flexibility and customization that is not
           available with EOAs. Unlike EOAs where the signature validation logic is standardized,
@@ -835,7 +820,6 @@ address: ${connectDetails.session?.accountAddress}`}
           smart contract itself. This allows for a variety of signature schemes and additional
           authorization logic.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           Another important standard for smart contract wallets is{' '}
           <Text
@@ -854,7 +838,6 @@ address: ${connectDetails.session?.accountAddress}`}
           for instance, during login or other interactive processes. ERC-6492 brings a systematic
           way to validate signatures from such yet-to-be-deployed smart contract wallets.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           The core of this standard extends the ERC-1271 standard to handle predeploy contracts. It
           adds a wrapper signature format that signing contracts may use before they're deployed,
@@ -867,32 +850,47 @@ address: ${connectDetails.session?.accountAddress}`}
           contract if it isn't already deployed, and then calls <strong>isValidSignature</strong> on
           the contract with the unwrapped signature.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           ERC-6492 also facilitates both on-chain and off-chain validation, and is backward
           compatible with previous work on signature validation, and allows for easy verification of
           all signature types, including EOA signatures and typed data providing flexibility in
           signature verification processes.
         </Text>
-
+        <Text as="p" variant="normal" color="text80">
+          As an important side note, reflecting on the ERCs discussed and their enhancements to
+          smart contract wallets,{' '}
+          <Text
+            as="a"
+            className="underline-text"
+            href="https://ethereum.org/en/roadmap/account-abstraction/"
+            target="_blank"
+            rel="noreferrer">
+            account abstraction
+          </Text>{' '}
+          emerges as a future cornerstone in Ethereum's interaction paradigm, as projected in the
+          protocol's roadmap. ERC-1271 and ERC-6492 have pioneered advancements by allowing
+          signature flexibility and addressing the intricacies of predeployed contracts. Looking
+          ahead, account abstraction promises to amplify these advancements. As the Ethereum roadmap
+          unfolds, it points towards a setting where users interact more fluidly. With these
+          developments, smart contract wallets could take a more proactive role in transaction
+          initiation, and be fine-tuned for bespoke wallet interactions. This shift aims to present
+          users with Ethereum's broad advantages while making its underlying complexities more
+          accessible.
+        </Text>
         <Divider marginY="4" />
-
         <Text as="h3" variant="medium" color="text50">
           Validation
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           As you've seen, we've used <strong>ethsigning</strong> package for validating both EOA and
           smart contract wallet signatures. This capability of the package is implemented easily
           thanks to ERC-6492 we mentioned above.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           Now let's take a look under the hood. We will again go over the source code in an expanded
           line-by-line format (and partly pseudo-code since it skips some setup for brevity) to get
           a better understanding.
         </Text>
-
         <Box marginBottom="6">
           <SyntaxHighlighter
             showLineNumbers={true}
@@ -903,25 +901,20 @@ address: ${connectDetails.session?.accountAddress}`}
             {codeSnippet_ethsigningInnerFlattened}
           </SyntaxHighlighter>
         </Box>
-
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 1: Preparing the Digest
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           In this part, we are preparing the message 'Test' for validation comparison by creating a
           hash digest. As you may have noticed this part is exactly same as the first part of the
           section where we created hash digest for the signature.
         </Text>
-
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 2: Validating the Signature
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           Here we validate the signature by doing an <strong>eth_call</strong> with related params.
         </Text>
-
         <Text as="p" variant="normal" color="text80">
           We've now seen how the <strong>ethsigning</strong> package is able to validate both EOA
           and smart contract wallet signatures in detail, showcasing the utility and ease brought
