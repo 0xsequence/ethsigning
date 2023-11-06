@@ -819,7 +819,7 @@ address: ${connectDetails.session?.accountAddress}`}
             target="_blank"
             rel="noreferrer">
             ERC-1271: Standard Signature Validation Method for Contracts
-          </Text>{' '}
+          </Text>
           , can define their own logic for validating signatures through methods defined within the
           smart contract itself. This allows for a variety of signature schemes and additional
           authorization logic.
