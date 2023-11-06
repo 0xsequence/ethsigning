@@ -760,7 +760,7 @@ address: ${connectDetails.session?.accountAddress}`}
           In this part, we are preparing the message 'Test' for signing by creating a hash digest:
         </Text>
         <Text as="p" variant="normal" color="text80">
-          <Text fontWeight="bold">Preparing the Message (Lines 5-16):</Text> Here we see{' '}
+          <Text fontWeight="bold">Preparing (Lines 5-16):</Text> Here we see{' '}
           <Text
             as="a"
             className="underline-text"
