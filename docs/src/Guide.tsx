@@ -330,7 +330,9 @@ const isValidSignature = '0x01' ===
         <Text as="p" variant="normal" color="text80">
           In Ethereum, a signature is a cryptographic proof used to verify the identity of the
           sender and ensure that a message or transaction remains unchanged during transit, which is
-          fundamental for the secure operation of the network. <br />
+          fundamental for the secure operation of the network.
+        </Text>
+        <Text as="p" variant="normal" color="text80">
           In the following sections, we'll walk through each step of signature creation and
           validation interactively using popular front-end libraries. We will use{' '}
           <Text
@@ -369,7 +371,8 @@ const isValidSignature = '0x01' ===
             ethsigning
           </Text>{' '}
           validation helper package.
-          <br />
+        </Text>
+        <Text as="p" variant="normal" color="text80">
           We will then take a deeper look on inner workings of the methods used and touch on the{' '}
           <Text
             as="a"
@@ -383,7 +386,7 @@ const isValidSignature = '0x01' ===
         </Text>
       </Box>
 
-      <Divider marginY="8" />
+      <Divider marginTop="6" marginBottom="8" />
 
       <Box flexDirection="column">
         <Text as="h2" variant="large" color="text100" fontWeight="bold">
@@ -559,7 +562,7 @@ const isValidSignature = '0x01' ===
           </Box>
         )}
 
-        <Divider marginY="4" />
+        <Divider marginTop="3" marginBottom="6" />
 
         <Text as="h3" variant="medium" color="text50">
           With a Smart Contract Wallet
@@ -715,7 +718,7 @@ address: ${connectDetails.session?.accountAddress}`}
         </Text>
       </Box>
 
-      <Divider marginY="8" />
+      <Divider marginTop="6" marginBottom="8" />
 
       <Box flexDirection="column">
         <Text as="h2" variant="large" fontWeight="bold" color="text100">
@@ -800,7 +803,9 @@ address: ${connectDetails.session?.accountAddress}`}
           key. This signature can be shared with others who can use it to verify that it was indeed
           created by the private key associated with your Ethereum address.
         </Text>
-        <Divider marginY="4" />
+
+        <Divider marginTop="3" marginBottom="6" />
+
         <Text as="h3" variant="medium" color="text50">
           Smart Contract Wallets
         </Text>
@@ -877,7 +882,9 @@ address: ${connectDetails.session?.accountAddress}`}
           users with Ethereum's broad advantages while making its underlying complexities more
           accessible.
         </Text>
-        <Divider marginY="4" />
+
+        <Divider marginTop="3" marginBottom="6" />
+
         <Text as="h3" variant="medium" color="text50">
           Validation
         </Text>
@@ -922,7 +929,7 @@ address: ${connectDetails.session?.accountAddress}`}
         </Text>
       </Box>
 
-      <Divider marginY="8" />
+      <Divider marginTop="6" marginBottom="8" />
 
       <Box flexDirection="column">
         <Text as="h2" variant="large" color="text100" fontWeight="bold" marginBottom="6">
@@ -953,7 +960,7 @@ address: ${connectDetails.session?.accountAddress}`}
           engagement and curiosity drive the community forward, and we're thankful for that.
         </Text>
 
-        <Divider marginY="8" />
+        <Divider marginTop="6" marginBottom="8" />
 
         <Text as="h2" variant="large" color="text100" fontWeight="bold" marginBottom="6">
           Let's Stay Connected!
