@@ -202,12 +202,12 @@ const digest = keccak256(concat([
     toUtf8Bytes(String(messageBytes.length)),
     messageBytes
 ]));
-  
-// 2. Signing digest
 const digestBytes = arrayify(digest);
 if (digestBytes.length !== 32) {
   throw("bad digest length", "digest", digest);
 }
+  
+// 2. Signing digest
 const keyPair = getCurve().keyFromPrivate(arrayify(this.privateKey));
 const signedDigest = keyPair.sign(digestBytes, ...);
 const splitSig = splitSignature({
@@ -760,7 +760,7 @@ address: ${connectDetails.session?.accountAddress}`}
           In this part, we are preparing the message 'Test' for signing by creating a hash digest:
         </Text>
         <Text as="p" variant="normal" color="text80">
-          <Text fontWeight="bold">Preparing the Message (Lines 7-12):</Text> Here we see{' '}
+          <Text fontWeight="bold">Preparing the Message (Lines 5-16):</Text> Here we see{' '}
           <Text
             as="a"
             className="underline-text"
@@ -774,7 +774,8 @@ address: ${connectDetails.session?.accountAddress}`}
           Message:\n". <br />
           The message and the prefix are converted to byte arrays, concatenated together along with
           the message length, and then hashed using the keccak256 function to create a digest of the
-          message.
+          message. Finally, the digest is converted to a byte array and its length is checked to
+          ensure it is 32 bytes, which is the required length for signing.
         </Text>
         <Text as="h4" variant="normal" color="text100" fontWeight="bold">
           Part 2: Signing the Digest
@@ -783,13 +784,11 @@ address: ${connectDetails.session?.accountAddress}`}
           In this part, we sign the generated digest using the private key:
         </Text>
         <Text as="p" variant="normal" color="text80">
-          <Text fontWeight="bold">Creating a Key Pair (Line 15):</Text> A key pair object is created
-          from the private key which will be used for signing the digest. Preparing the Digest
-          (Lines 16-19): The digest is converted to a byte array and its length is checked to ensure
-          it is 32 bytes, which is the required length for signing.
+          <Text fontWeight="bold">Creating a Key Pair (Line 19):</Text> A key pair object is created
+          from the private key which will be used for signing the digest.
         </Text>
         <Text as="p" variant="normal" color="text80">
-          <Text fontWeight="bold">Signing the Digest (Lines 20-25):</Text>
+          <Text fontWeight="bold">Signing the Digest (Lines 20-25): </Text>
           The digest is signed using the sign method of the key pair object to generate the r, s,
           and recoveryParam values of the signature.
         </Text>
