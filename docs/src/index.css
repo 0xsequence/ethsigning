@@ -74,6 +74,8 @@ h4 {
 }
 
 p {
+  font-size: var(--font-sizes-medium) !important;
+  line-height: var(--line-heights-6) !important;
   margin-bottom: var(--space-4);
 }
 

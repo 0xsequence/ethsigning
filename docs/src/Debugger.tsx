@@ -193,12 +193,12 @@ export default function Debugger() {
           <Text variant="xlarge" marginBottom="4">
             Signature Debugger
           </Text>
-          <Text variant="normal">
+          <Text as="p" variant="normal">
             Enter signer address, message and signature to validate/debug. The tool will check
             possible issues if signature is not valid and try to give you direction that can help
             you resolve the issue.
           </Text>
-          <Text variant="normal" marginTop="4" color="positive">
+          <Text as="p" variant="normal" marginTop="4" color="positive">
             Supports both EOA and smart contract wallet signatures.
           </Text>
         </Box>
