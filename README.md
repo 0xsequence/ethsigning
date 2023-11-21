@@ -62,4 +62,4 @@ console.log('isValid:', isValid)
 
 ## Package in action
 
-You can try it (here)[https://ethsigning.guide/debugger] to see the package in action.
+You can try it [here](https://ethsigning.guide/debugger) to see the package in action.
