@@ -974,11 +974,11 @@ address: ${connectDetails.session?.accountAddress}`}
           marginTop="4"
           marginBottom="4"
           as="a"
-          href="https://github.com/0xsequence"
+          href="https://github.com/0xsequence/ethsigning"
           target="_blank"
           rel="noreferrer"
           className="underline-text">
-          github.com/0xsequence
+          github.com/0xsequence/ethsigning
         </Text>
 
         <Text
