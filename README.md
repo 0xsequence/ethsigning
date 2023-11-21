@@ -60,6 +60,6 @@ console.log('isValid:', isValid)
 
 - If you are validating a signature that was signed with a smart contract, make sure the provider you pass is for the network the message was signed on.
 
-## Debugger
+## Package in action
 
-(Add debugger link here once deployed)
+You can try it (here)[https://ethsigning.guide/debugger] to see the package in action.
