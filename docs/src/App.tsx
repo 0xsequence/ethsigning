@@ -15,7 +15,7 @@ const router = createBrowserRouter(
       element: <Debugger />
     }
   ],
-  { basename: '/ethsigning/' }
+  { basename: '/' }
 )
 
 function App() {
