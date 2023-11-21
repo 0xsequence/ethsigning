@@ -8,6 +8,8 @@ Ethsigning helps you validate signatures for both externally owned account (EOA)
 - [ERC-1271: Standard Signature Validation Method for Contracts](https://eips.ethereum.org/EIPS/eip-1271)
 - [ERC-6492: Signature Validation for Predeploy Contracts](https://eips.ethereum.org/EIPS/eip-6492)
 
+We've also prepared a short guide on signatures; [check it here](https://ethsigning.guide) if you'd like to learn more!
+
 ## Installation
 
 `npm install ethsigning`
